@@ -1,0 +1,16 @@
+{
+  "nodeBind": "127.0.0.1",
+  "nodePort": 18780,
+  "nodeUrl": "http://127.0.0.1:18780",
+  "storageDir": "/var/lib/coc/storage",
+  "agentIntervalMs": 60000,
+  "agentBatchSize": 5,
+  "agentSampleSize": 2,
+  "relayerIntervalMs": 60000,
+  "challengerSet": [],
+  "aggregatorSet": [],
+  "nodeIds": [
+    "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ],
+  "rewardPoolWei": "1000000000000000000"
+}
