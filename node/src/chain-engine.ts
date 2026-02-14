@@ -1,0 +1,248 @@
+import type { TxReceipt, EvmChain } from "./evm.ts"
+import { Mempool } from "./mempool.ts"
+import { ChainStorage } from "./storage.ts"
+import { hashBlockPayload, validateBlockLink, zeroHash } from "./hash.ts"
+import type { ChainBlock, ChainSnapshot, Hex, MempoolTx } from "./blockchain-types.ts"
+import { Transaction } from "ethers"
+
+export interface ChainEngineConfig {
+  dataDir: string
+  nodeId: string
+  validators: string[]
+  finalityDepth: number
+  maxTxPerBlock: number
+  minGasPriceWei: bigint
+}
+
+export class ChainEngine {
+  readonly mempool = new Mempool()
+  private readonly storage: ChainStorage
+  private readonly blocks: ChainBlock[] = []
+  private readonly receiptsByBlock = new Map<bigint, TxReceipt[]>()
+  private readonly txHashSet = new Set<Hex>()
+  private readonly cfg: ChainEngineConfig
+  private readonly evm: EvmChain
+
+  constructor(cfg: ChainEngineConfig, evm: EvmChain) {
+    this.cfg = cfg
+    this.evm = evm
+    this.storage = new ChainStorage(cfg.dataDir)
+  }
+
+  async init(): Promise<void> {
+    const snapshot = await this.storage.load()
+    if (snapshot.blocks.length === 0) {
+      return
+    }
+
+    await this.rebuildFromBlocks(snapshot.blocks)
+  }
+
+  getTip(): ChainBlock | undefined {
+    return this.blocks[this.blocks.length - 1]
+  }
+
+  getHeight(): bigint {
+    return this.getTip()?.number ?? 0n
+  }
+
+  getBlockByNumber(number: bigint): ChainBlock | null {
+    return this.blocks.find((b) => b.number === number) ?? null
+  }
+
+  getBlockByHash(hash: Hex): ChainBlock | null {
+    return this.blocks.find((b) => b.hash === hash) ?? null
+  }
+
+  getBlocks(): ChainBlock[] {
+    return [...this.blocks]
+  }
+
+  getReceiptsByBlock(number: bigint): TxReceipt[] {
+    return this.receiptsByBlock.get(number) ?? []
+  }
+
+  makeSnapshot(): ChainSnapshot {
+    return {
+      blocks: this.blocks,
+      updatedAtMs: Date.now(),
+    }
+  }
+
+  expectedProposer(nextHeight: bigint): string {
+    const set = this.cfg.validators
+    if (set.length === 0) {
+      return this.cfg.nodeId
+    }
+    const idx = Number((nextHeight - 1n) % BigInt(set.length))
+    return set[idx]
+  }
+
+  async addRawTx(rawTx: Hex): Promise<MempoolTx> {
+    const tx = this.mempool.addRawTx(rawTx)
+    if (this.txHashSet.has(tx.hash)) {
+      this.mempool.remove(tx.hash)
+      throw new Error("tx already confirmed")
+    }
+    return tx
+  }
+
+  async proposeNextBlock(): Promise<ChainBlock | null> {
+    const nextHeight = this.getHeight() + 1n
+    if (this.expectedProposer(nextHeight) !== this.cfg.nodeId) {
+      return null
+    }
+
+    const txs = await this.mempool.pickForBlock(
+      this.cfg.maxTxPerBlock,
+      (address) => this.evm.getNonce(address),
+      this.cfg.minGasPriceWei,
+    )
+
+    const block = this.buildBlock(nextHeight, txs)
+    await this.applyBlock(block, true)
+    return block
+  }
+
+  async applyBlock(block: ChainBlock, locallyProposed = false): Promise<void> {
+    const prev = this.getTip()
+    if (!validateBlockLink(prev, block)) {
+      throw new Error("invalid block link")
+    }
+    if (this.expectedProposer(block.number) !== block.proposer) {
+      throw new Error("invalid block proposer")
+    }
+
+    const expectedHash = hashBlockPayload({
+      number: block.number,
+      parentHash: block.parentHash,
+      proposer: block.proposer,
+      timestampMs: block.timestampMs,
+      txs: block.txs,
+    })
+    if (expectedHash !== block.hash) {
+      throw new Error("invalid block hash")
+    }
+
+    const receipts: TxReceipt[] = []
+    for (let i = 0; i < block.txs.length; i++) {
+      const raw = block.txs[i]
+      const result = await this.evm.executeRawTx(raw, block.number, i, block.hash)
+      const receipt = this.evm.getReceipt(result.txHash)
+      if (receipt) {
+        receipts.push(receipt)
+      }
+      this.txHashSet.add(result.txHash as Hex)
+    }
+
+    this.blocks.push(block)
+    this.receiptsByBlock.set(block.number, receipts)
+
+    for (const raw of block.txs) {
+      try {
+        const parsed = Transaction.from(raw)
+        this.mempool.remove(parsed.hash as Hex)
+      } catch {
+        // ignore parse failures
+      }
+    }
+
+    this.updateFinalityFlags()
+    await this.storage.save(this.makeSnapshot())
+
+    if (locallyProposed) {
+      // no-op hook for metrics
+    }
+  }
+
+  async maybeAdoptSnapshot(snapshot: ChainSnapshot): Promise<boolean> {
+    const incomingTip = snapshot.blocks[snapshot.blocks.length - 1]
+    if (!incomingTip) return false
+    if (incomingTip.number <= this.getHeight()) return false
+
+    // Verify block hash chain integrity before adopting
+    if (!this.verifyBlockChain(snapshot.blocks)) {
+      return false
+    }
+
+    await this.rebuildFromBlocks(snapshot.blocks)
+    await this.storage.save(this.makeSnapshot())
+    return true
+  }
+
+  private verifyBlockChain(blocks: ChainBlock[]): boolean {
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i]
+      const normalized = {
+        number: BigInt(block.number),
+        parentHash: block.parentHash,
+        proposer: block.proposer,
+        timestampMs: Number(block.timestampMs),
+        txs: [...block.txs],
+      }
+      const expectedHash = hashBlockPayload(normalized)
+      if (expectedHash !== block.hash) {
+        return false
+      }
+      if (i === 0) {
+        if (BigInt(block.number) === 1n && block.parentHash !== zeroHash()) return false
+      } else {
+        const prev = blocks[i - 1]
+        if (block.parentHash !== prev.hash) return false
+        if (BigInt(block.number) !== BigInt(prev.number) + 1n) return false
+      }
+    }
+    return true
+  }
+
+  private buildBlock(nextHeight: bigint, selected: MempoolTx[]): ChainBlock {
+    const parentHash = this.getTip()?.hash ?? zeroHash()
+    const txs = selected.map((item) => item.rawTx)
+    const timestampMs = Date.now()
+    const hash = hashBlockPayload({
+      number: nextHeight,
+      parentHash,
+      proposer: this.cfg.nodeId,
+      timestampMs,
+      txs,
+    })
+
+    return {
+      number: nextHeight,
+      hash,
+      parentHash,
+      proposer: this.cfg.nodeId,
+      timestampMs,
+      txs,
+      finalized: false,
+    }
+  }
+
+  private updateFinalityFlags(): void {
+    const depth = BigInt(Math.max(1, this.cfg.finalityDepth))
+    const tip = this.getHeight()
+    for (const block of this.blocks) {
+      block.finalized = tip >= block.number + depth
+    }
+  }
+
+  private async rebuildFromBlocks(blocks: ChainBlock[]): Promise<void> {
+    this.blocks.length = 0
+    this.receiptsByBlock.clear()
+    this.txHashSet.clear()
+    await this.evm.resetExecution()
+
+    for (const block of blocks) {
+      const normalized: ChainBlock = {
+        number: BigInt(block.number),
+        hash: block.hash,
+        parentHash: block.parentHash,
+        proposer: block.proposer,
+        timestampMs: Number(block.timestampMs),
+        txs: [...block.txs],
+        finalized: Boolean(block.finalized),
+      }
+      await this.applyBlock(normalized)
+    }
+  }
+}
