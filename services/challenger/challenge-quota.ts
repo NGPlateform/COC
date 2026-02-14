@@ -1,0 +1,53 @@
+import type { ChallengeType, Hex32 } from "../common/pose-types.ts"
+
+export interface QuotaConfig {
+  maxPerEpoch: Record<ChallengeType, number>
+  minIntervalMs: Record<ChallengeType, number>
+}
+
+interface Counter {
+  count: number
+  lastIssuedAtMs: bigint
+}
+
+export class ChallengeQuota {
+  private readonly cfg: QuotaConfig
+  private readonly counters = new Map<string, Counter>()
+
+  constructor(cfg: QuotaConfig) {
+    this.cfg = cfg
+  }
+
+  canIssue(nodeId: Hex32, epochId: bigint, challengeType: ChallengeType, nowMs: bigint): { ok: boolean; reason?: string } {
+    const key = this.key(nodeId, epochId, challengeType)
+    const current = this.counters.get(key)
+    const max = this.cfg.maxPerEpoch[challengeType]
+    const minInterval = BigInt(this.cfg.minIntervalMs[challengeType])
+
+    if (current && current.count >= max) {
+      return { ok: false, reason: "quota exceeded" }
+    }
+
+    if (current && nowMs - current.lastIssuedAtMs < minInterval) {
+      return { ok: false, reason: "rate limited" }
+    }
+
+    return { ok: true }
+  }
+
+  commitIssue(nodeId: Hex32, epochId: bigint, challengeType: ChallengeType, nowMs: bigint): void {
+    const key = this.key(nodeId, epochId, challengeType)
+    const current = this.counters.get(key)
+    if (!current) {
+      this.counters.set(key, { count: 1, lastIssuedAtMs: nowMs })
+      return
+    }
+
+    current.count += 1
+    current.lastIssuedAtMs = nowMs
+  }
+
+  private key(nodeId: Hex32, epochId: bigint, challengeType: ChallengeType): string {
+    return `${nodeId}:${epochId.toString()}:${challengeType}`
+  }
+}
