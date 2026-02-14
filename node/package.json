@@ -1,0 +1,12 @@
+{
+  "name": "coc-node",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "ethers": "^6.13.5"
+  }
+}
