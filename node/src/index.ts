@@ -569,7 +569,7 @@ if (config.enableDht) {
 }
 
 // Prometheus metrics server
-const metricsPort = Number(process.env.COC_METRICS_PORT ?? 9100)
+const metricsPort = config.metricsPort ?? Number(process.env.COC_METRICS_PORT ?? 9100)
 const metricsHandle = startMetricsServer({
   getBlockHeight: () => chain.getHeight(),
   getTxPoolPending: () => chain.mempool.stats().size,

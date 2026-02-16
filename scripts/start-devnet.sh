@@ -12,7 +12,8 @@ BASE_RPC=28780
 BASE_P2P=29780
 BASE_IPFS=5001
 BASE_WS=18781
-BASE_WIRE=29781
+BASE_WIRE=29800
+BASE_METRICS=9100
 RUN_DIR="${ROOT}/.run/devnet-${NODES}"
 rm -rf "$RUN_DIR"
 mkdir -p "$RUN_DIR"
@@ -25,6 +26,7 @@ for i in $(seq 1 "$NODES"); do
   IPFS_PORT=$((BASE_IPFS + IDX))
   WS_PORT=$((BASE_WS + IDX))
   WIRE_PORT=$((BASE_WIRE + IDX))
+  METRICS_PORT=$((BASE_METRICS + IDX))
   DATA_DIR="${RUN_DIR}/${NODE_ID}"
   mkdir -p "$DATA_DIR"
 
@@ -70,6 +72,7 @@ for i in $(seq 1 "$NODES"); do
   "p2pPort": ${P2P_PORT},
   "ipfsPort": ${IPFS_PORT},
   "wsPort": ${WS_PORT},
+  "metricsPort": ${METRICS_PORT},
   "peers": ${PEERS_JSON},
   "validators": [${VALIDATORS}],
   "blockTimeMs": 3000,
@@ -101,7 +104,7 @@ JSON
 
   COC_NODE_CONFIG="${DATA_DIR}/node-config.json" node --experimental-strip-types "${ROOT}/node/src/index.ts" >"${LOG_FILE}" 2>&1 &
   echo $! > "${PID_FILE}"
-  echo "started ${NODE_ID}: rpc=${RPC_PORT} p2p=${P2P_PORT} ws=${WS_PORT} wire=${WIRE_PORT} ipfs=${IPFS_PORT} pid=$(cat "${PID_FILE}")"
+  echo "started ${NODE_ID}: rpc=${RPC_PORT} p2p=${P2P_PORT} ws=${WS_PORT} wire=${WIRE_PORT} ipfs=${IPFS_PORT} metrics=${METRICS_PORT} pid=$(cat "${PID_FILE}")"
 done
 
 echo "devnet started at ${RUN_DIR}"

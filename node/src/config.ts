@@ -21,6 +21,7 @@ export interface NodeConfig {
   wsPort: number
   ipfsBind: string
   ipfsPort: number
+  metricsPort?: number
   storageDir: string
   storage: StorageConfig
   p2pBind: string
