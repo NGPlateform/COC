@@ -276,7 +276,7 @@ Foundation signs contract → Phased disbursement (30/40/30) → KPI verificatio
 | **Gas Fees** | Transaction and contract execution | Miner (priority) + Burn (base fee) |
 | **PoSe Service Fees** | Off-chain service payments | Service providers |
 | **DID Registration Fees** | Soul identity registration and backup anchoring | Miner + protocol burn |
-| **Delegation Staking** | Bonds for delegated operations | Bond pool (anti-fraud) |
+| **Node Bond** | One-time ~$50 USDT equivalent for node registration | Bond pool (anti-fraud) |
 
 ### 6.2 Foundation Sustainable Revenue
 
@@ -302,15 +302,17 @@ Assumptions:
 - 60% to B1 (uptime/RPC): 22.5M COC
 - 100 FN nodes split equally: 225,000 COC/node
 
-At $0.10/COC assumption:
-- Annual revenue: ~$22,500
-- Monthly revenue: ~$1,875
-- Bond cost: ~$50 (one-time)
-- Hardware cost: ~$200/month (home server)
-- Net income: ~$1,675/month
+Price scenario comparison:
+                       $0.10/COC      $0.15/COC        $0.20/COC
+                       (early-stage)  (Series A anchor)  (neutral)
+  Annual revenue       $22,500        $33,750           $45,000
+  Monthly revenue      $1,875         $2,813            $3,750
+  Monthly hardware     $200           $200              $200
+  Net income (month)   $1,675         $2,613            $3,550
+  Bond (one-time)      $50            $50               $50
 ```
 
-Actual revenue depends on network node count, COC price, and node service quality.
+Actual revenue depends on network node count, COC price, and node service quality. The $0.15-$0.20 range corresponds to implied token prices under the business plan §9.1 Series A valuation scenarios.
 
 ---
 
