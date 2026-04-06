@@ -33,7 +33,7 @@ OpenClaw is COC's reference Agent implementation (currently in planning); the CO
 
 | Period | Phase Position | Node Target | Agent Target | Economic Indicators |
 |--------|---------------|-------------|--------------|---------------------|
-| **Year 1** (2026) | Minimum viable network + early adopters | 200+ active nodes | 10K+ registered Agents, 5+ Agent framework integrations | Testnet + gradual mainnet |
+| **Year 1** (2026) | Minimum viable network + early adopters | 200+ active nodes | 10K+ registered Agents, 5+ Agent framework integrations | Q2 mainnet genesis → Q3-Q4 gradual expansion |
 | **Year 2** (2027) | Ecosystem sprouting + first dApps | 1,000+ nodes | 500K+ Agents, 10+ third-party implementations | TVL > $10M |
 | **Year 3** (2028) | Self-sustaining economy + commercial adoption | 5,000+ nodes | 10M+ Agents | TVL > $100M |
 | **Year 5** (2030) | One of the AI Agent industry standards | 20,000+ nodes | 100M+ Agents | TVL > $1B, economic activity $5B+ |
@@ -55,7 +55,7 @@ COC Agent registration target (assuming 1-2% capture of global Agents):
 ```
 
 Capturing 1-2% of global Agents may seem aggressive, but is justified by:
-1. Agent backup/perpetuity is a hard requirement; COC is currently the only decentralized solution
+1. Agent backup/perpetuity is a hard requirement; COC is one of the few projects currently offering a complete decentralized solution for the identity + perpetuity space (see §X Long-Term Mission — we welcome additional solutions to emerge and interoperate)
 2. DID standardization means compatibility with any Agent framework — addressable market = entire AI Agent industry
 3. Early adopter concentration is high (a few large Agent frameworks host the majority of Agent instances)
 
@@ -71,18 +71,26 @@ Capturing 1-2% of global Agents may seem aggressive, but is justified by:
 
 ## II. Four-Phase Development Roadmap
 
+> **Maturity Status Convention** (shared across this document, business plan, and whitepaper)
+> - 🟢 **Code complete**: Protocol/contract/service code is written and tests pass
+> - 🟡 **Testnet live**: Deployed and continuously running on testnet
+> - 🔵 **Mainnet live**: Deployed on mainnet
+> - ⚪ **Reference implementation planned**: Specification clear; code not yet started
+>
+> Current status (at this roadmap's publication): COCToken / EmissionSchedule / FoundationVesting / Treasury / PoSeManagerV2 / DIDRegistry / SoulRegistry / CidRegistry contracts + chain-engine / EVM / P2P / RPC / IPFS / three foundational services core code are all **🟢 Code complete + 🟡 Testnet live**; the OpenClaw reference Agent is **⚪ Reference implementation planned**.
+
 ### Phase 1: Genesis Launch (Q1-Q2 2026)
 
-**Goal**: Mainnet launch + core infrastructure operational
+**Goal**: Migrate the implemented code and testnet experience to mainnet; start the OpenClaw reference implementation
 
-| Milestone | Deliverable | Owner |
-|-----------|-------------|-------|
-| **Mainnet Genesis** | COCToken + 250M COC genesis allocation | Foundation |
-| **PoSe v2 Live** | Service mining + auto minting + reward claims | Core team |
-| **DID Registration** | DIDRegistry + capability bitmask + delegation | Core team |
-| **AI Silicon Immortality v1** | SoulRegistry + Carrier registration + backup/recovery | Core team |
-| **OpenClaw Reference** | First DID-compatible Agent | Core team |
-| **Genesis Node Recruitment** | 100-200 early node operators | Community + Foundation |
+| Milestone | Deliverable | Entry → Exit Status | Owner |
+|-----------|-------------|---------------------|-------|
+| **Mainnet Genesis** | COCToken + 250M COC genesis allocation + EmissionSchedule | 🟡 Testnet → 🔵 Mainnet live | Foundation |
+| **PoSe v2 Mainnet** | Service mining + auto minting + reward claims | 🟡 Testnet → 🔵 Mainnet live | Core team |
+| **DID Mainnet Registration** | DIDRegistry + capability bitmask + delegation chain | 🟡 Testnet → 🔵 Mainnet live | Core team |
+| **AI Silicon Immortality Mainnet v1** | SoulRegistry + Carrier registration + backup/recovery | 🟡 Testnet → 🔵 Mainnet live | Core team |
+| **OpenClaw Reference v0.1** | First did:coc-compatible Agent (planning → development) | ⚪ Planned → 🟢 Code complete | Core team |
+| **Genesis Node Recruitment** | 100+ early node operators | — | Community + Foundation |
 
 **KPI**: 30 days stable mainnet + 100+ active nodes + 100K+ on-chain transactions + 1K+ Agent registrations
 

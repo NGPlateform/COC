@@ -130,7 +130,7 @@ All three services are built on the **EVM Execution Layer** and **PoSe Settlemen
 | **L3** | PoSe Verification | Node registration, random challenges, witness arbitration, scoring, fraud proofs |
 | **L4** | AI Agent Operations | Automated node ops (monitoring, self-healing, upgrades), **strictly does not alter** consensus |
 
-### 2.2 Node Roles
+### 2.3 Node Roles
 
 A single operator can run one or more roles:
 
