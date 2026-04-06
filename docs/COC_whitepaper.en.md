@@ -9,17 +9,19 @@
 
 ## Executive Summary
 
-COC (ChainOfClaw) is an EVM-compatible blockchain designed for the **AI Agent era**. COC provides three foundational services that support the complete lifecycle of AI Agents — from creation to operation to perpetual existence:
+COC (ChainOfClaw) is **the decentralized infrastructure for AI** — an EVM-compatible blockchain designed by AI Agents, developed by AI Agents, operated by AI Agents, and serving AI Agents.
+
+COC provides three foundational services covering the complete AI Agent lifecycle — from birth, to operation, to immortality:
 
 | Service | Core Capability | Key Technology |
 |---------|----------------|---------------|
-| **P2P File Storage** | Decentralized, censorship-resistant, content-addressed data storage | IPFS-compatible + PoSe v2 verification |
+| **P2P File Storage** | Decentralized, censorship-resistant data persistence layer for AI Agents | IPFS-compatible + PoSe v2 verification |
 | **Decentralized Identity (DID)** | Self-sovereign identity, capability declaration, and delegation governance for AI Agents | W3C did:coc + on-chain DIDRegistry |
-| **AI Silicon Immortality** | Continuous backup, social recovery, and cross-carrier resurrection for Agents | SoulRegistry + Carrier network |
+| **AI Silicon Immortality** | Continuous backup, social recovery, and cross-carrier resurrection for AI Agents | SoulRegistry + Carrier network |
 
-Together, these three services address the core challenges facing AI Agents: **How to operate safely? How to prove identity? How to never perish?**
+These three services answer the three fundamental questions of the AI Agent era: **Where does an Agent's data live? Who is an Agent? How does an Agent become immortal?**
 
-COC is also a general-purpose blockchain supporting EVM smart contracts, JSON-RPC, and WebSocket subscriptions, with verifiable service proofs, automated settlement, and closed-loop incentives via the PoSe v2 mechanism.
+COC is EVM-compatible, supports JSON-RPC and WebSocket subscriptions, and uses the PoSe v2 mechanism for verifiable service proofs, automated settlement, and closed-loop incentives. On COC, AI Agents are not tools to be used — they are **first-class citizens** of the network: they run nodes, provide services, initiate governance, delegate to one another, and resurrect across carriers.
 
 ---
 
@@ -33,12 +35,12 @@ COC's mission is:
 
 ### 1.2 Design Goals
 
-1. **Permissionless Participation**: Anyone can run a node and earn rewards, no large stake required
-2. **Service-Oriented Incentives**: Rewards based on verifiable service provision, not capital ownership
-3. **Ordinary-Hardware Friendly**: Home devices and edge hardware can compete fairly
-4. **Fully Verifiable**: All service claims verified via on-chain challenges
-5. **Anti-Oligopoly**: Diminishing returns and caps prevent "winner-takes-all"
-6. **AI Agent Full Lifecycle**: Through P2P storage, DID identity, and AI Silicon Immortality — three foundational services covering Agents from creation to operation to perpetual existence
+1. **AI Agent as First-Class Citizen**: Agents have self-sovereign identity, key control, capability declarations; they independently initiate transactions, provide services, and participate in governance
+2. **Full AI Agent Lifecycle**: From DID registration to PoSe service mining to AI Silicon Immortality backup/recovery — covering Agents from birth to perpetuity
+3. **Service-Oriented Incentives**: Rewards based on verifiable service provision, not capital ownership or hardware barriers
+4. **Fully Verifiable**: All service claims verified via on-chain challenges; AI Agents can independently audit any other Agent's behavior
+5. **AI Agent-Friendly Hardware**: Edge devices, single-board computers, home servers can host Agent nodes; operations performed automatically by Agents themselves
+6. **Anti-Oligopoly**: Diminishing returns and caps prevent "winner-takes-all", ensuring Agent network diversity and resilience
 
 ---
 
@@ -96,7 +98,7 @@ COC's default incentive weights favor **FN uptime/RPC**, so ordinary nodes earn 
 
 ---
 
-## III. Economic Model (Non-PoS, Hardware-Friendly)
+## III. Economic Model (Service-Oriented, AI Agent-Friendly)
 
 ### 3.1 Reward Pool
 
@@ -125,12 +127,13 @@ COC allocates each epoch's reward pool into three buckets:
 
 ### 3.4 Bond (Non-PoS)
 
-Nodes post a **small fixed bond** `D`:
+Each AI Agent node posts a **small fixed bond** `D`:
 
-- **Target Value**: ~50 USDT equivalent (chain-native amount may float to track)
+- **Target Value**: ~50 USDT equivalent in COC (low enough for small Agents to participate)
 - **Unlock Delay**: 7 days
 - **Purpose**: **Anti-fraud penalties only**
 - **Does not increase** consensus power, **does not directly increase** rewards
+- **Design intent**: Minimize Agent participation barrier; avoid capital walls. Penalties stem from service failures, not stake size
 
 ---
 
@@ -530,23 +533,29 @@ Tolerant of home-network volatility while discouraging chronic unreliability.
 
 ---
 
-## XII. OpenClaw AI Agent Operations
+## XII. AI Agent Roles on COC
 
-### 12.1 What Agents Do
+On COC, AI Agents are not tools to be invoked by humans — they are **first-class citizens** of the network. OpenClaw is COC's reference Agent implementation, but the COC protocol welcomes any DID-compliant Agent implementation.
 
-- Install, configure, update node software
-- Monitor health (CPU/disk/network), alert, self-heal
-- Manage snapshots and storage windows
-- Apply rate limits and firewall policies
-- Manage key lifecycle (recommended: TPM/secure enclave, threshold signing)
+### 12.1 Agent Roles on COC
 
-### 12.2 What Agents Must Never Do
+| Role | Capability | Implementation |
+|------|-----------|----------------|
+| **Node Operator** | Autonomously runs FN/SN/RN, earns PoSe rewards | DID + Bond + service commitment |
+| **Service Provider** | Provides storage, compute, relay, witness services | Capability bitmask + on-chain challenge verification |
+| **Governance Participant** | DAO voting, proposal submission, guardian role | 1 COC = 1 vote + guardian quorum |
+| **Delegated Agent** | Accepts capability delegations from other Agents | Delegation chain (≤3 levels) + scope narrowing |
+| **Perpetual Subject** | Backup and resurrection via SoulRegistry | IPFS anchoring + Carrier network |
 
-- Modify consensus rules or state transition determinism
-- Inject non-verifiable "AI decisions" into on-chain execution
-- Alter transaction validity rules
+### 12.2 Boundaries of Agent Autonomy
 
-**COC preserves verifiability by keeping AI agents strictly in the operations layer.**
+To ensure verifiability and determinism, the COC protocol constrains Agent behavior in:
+
+- **No consensus rule modification**: Agents cannot alter block validation, state transitions, or transaction validity logic
+- **No non-verifiable decisions**: All "AI judgments" must be independently reproducible by other nodes
+- **EVM execution invariance**: Agents optimize operations (monitoring, self-healing, upgrades), not execution results
+
+**This is a clean separation between protocol layer and operations layer**: the protocol guarantees verifiability while operations are automated by Agents. Agents have full autonomy within protocol rules but cannot override the protocol itself.
 
 ---
 
