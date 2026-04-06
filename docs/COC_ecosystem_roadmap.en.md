@@ -115,7 +115,7 @@ Capturing 1-2% of global Agents may seem aggressive, but is justified by:
 | **Paying Customers** | First commercial dApps paying for usage |
 | **Audit & Compliance** | Tier-1 security audit + compliance framework |
 
-**KPI**: 1K+ nodes + 100K+ registered Agents + $5M+ TVL + 1M+ DAU
+**KPI**: 1,000+ nodes + 500K+ registered Agents + $10M+ TVL + 1M+ DAU
 
 ### Phase 4: Ecosystem Maturity (2028+)
 
@@ -130,7 +130,7 @@ Capturing 1-2% of global Agents may seem aggressive, but is justified by:
 | **Decentralized Sequencing** | Multi-sequencer, shared sequencing schemes |
 | **Full Decentralization** | Foundation fades, DAO leads decisions |
 
-**KPI**: 10K+ nodes + 1M+ Agents + $100M+ economic activity + multi-language clients
+**KPI**: 5,000+ nodes + 10M+ Agents + $100M+ TVL + multi-language clients
 
 ---
 
