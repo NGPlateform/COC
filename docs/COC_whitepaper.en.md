@@ -15,7 +15,7 @@ COC (ChainOfClaw) is an EVM-compatible blockchain designed for the **AI Agent er
 |---------|----------------|---------------|
 | **P2P File Storage** | Decentralized, censorship-resistant, content-addressed data storage | IPFS-compatible + PoSe v2 verification |
 | **Decentralized Identity (DID)** | Self-sovereign identity, capability declaration, and delegation governance for AI Agents | W3C did:coc + on-chain DIDRegistry |
-| **Digital Immortality** | Continuous backup, social recovery, and cross-carrier resurrection for Agents | SoulRegistry + Carrier network |
+| **AI Silicon Immortality** | Continuous backup, social recovery, and cross-carrier resurrection for Agents | SoulRegistry + Carrier network |
 
 Together, these three services address the core challenges facing AI Agents: **How to operate safely? How to prove identity? How to never perish?**
 
@@ -38,7 +38,7 @@ COC's mission is:
 3. **Ordinary-Hardware Friendly**: Home devices and edge hardware can compete fairly
 4. **Fully Verifiable**: All service claims verified via on-chain challenges
 5. **Anti-Oligopoly**: Diminishing returns and caps prevent "winner-takes-all"
-6. **AI Agent Full Lifecycle**: Through P2P storage, DID identity, and Digital Immortality — three foundational services covering Agents from creation to operation to perpetual existence
+6. **AI Agent Full Lifecycle**: Through P2P storage, DID identity, and AI Silicon Immortality — three foundational services covering Agents from creation to operation to perpetual existence
 
 ---
 
@@ -71,7 +71,7 @@ COC's mission is:
 
 **Service 2 — Decentralized Identity (DID)**: W3C-standard `did:coc` method providing AI Agents with self-sovereign identity, capability declaration, hierarchical delegation, and verifiable credentials. Solves the identity problem: "Who is this Agent, what can it do, and on whose behalf?"
 
-**Service 3 — Digital Immortality**: Through SoulRegistry on-chain anchoring + IPFS distributed backup + Carrier host network, enables continuous Agent backup, social recovery after key loss, and automatic resurrection after host failure. Solves the continuity problem: "An Agent should never die."
+**Service 3 — AI Silicon Immortality**: Through SoulRegistry on-chain anchoring + IPFS distributed backup + Carrier host network, enables continuous Agent backup, social recovery after key loss, and automatic resurrection after host failure. Solves the continuity problem: "An Agent should never die."
 
 All three services are built on the **EVM Execution Layer** and **PoSe Settlement Layer**, sharing the same chain's security, incentive mechanism, and governance framework.
 
@@ -600,7 +600,7 @@ COC addresses the AI Agent safety challenge through three integrated systems:
 
 1. **Identity (DID)**: Every agent has a W3C-compliant decentralized identifier (`did:coc`) with verifiable capabilities and key hierarchy — preventing impersonation and scope violation.
 
-2. **Continuity (Silicon Immortality)**: Agents' state is continuously backed up to IPFS with on-chain anchoring, enabling resurrection on any compatible carrier when the original host fails.
+2. **Continuity (AI Silicon Immortality)**: Agents' state is continuously backed up to IPFS with on-chain anchoring, enabling resurrection on any compatible carrier when the original host fails.
 
 3. **Governance (Delegation & Boundaries)**: Smart contracts enforce capability boundaries, delegation scope limits, and guardian-based recovery — preventing both agent overreach and unauthorized termination.
 
@@ -639,11 +639,11 @@ Agents can issue and verify credentials (reputation scores, audit results, etc.)
 
 ---
 
-## XV. Silicon Immortality: AI Agent Backup and Resurrection
+## XV. AI Silicon Immortality: AI Agent Backup and Resurrection
 
 > **An AI Agent should never truly die.**
 
-COC's **Silicon Immortality** guarantees that an agent's digital soul (knowledge, personality, memory) persists beyond any single physical host.
+COC's **AI Silicon Immortality** guarantees that an agent's digital soul (knowledge, personality, memory) persists beyond any single physical host.
 
 ### 15.1 Automated Backup
 
