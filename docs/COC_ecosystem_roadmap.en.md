@@ -14,13 +14,50 @@ This document is the sister to the COC whitepaper. The whitepaper describes "wha
 
 ## I. Ecosystem Vision
 
-### 1.1 Three-Decade Goals
+### 1.1 Industry Context & Opportunity
 
-| Period | Goal | Metrics |
-|--------|------|---------|
-| **Year 1** (2026-2027) | Establish minimum viable ecosystem | 100+ active nodes, 10+ AI Agent implementations, 5+ dApps |
-| **Year 1-3** (2027-2029) | Form self-sustaining economy | 1,000+ active nodes, 1M+ registered Agents, TVL > $50M |
-| **Year 5-10** (2029+) | Become AI infrastructure standard | 10K+ nodes, 100M+ Agents, $1B+ economic activity |
+COC launches at the inflection point of AI Agent explosive growth:
+
+| Trend | Data | Implication for COC |
+|-------|------|--------------------|
+| **AI Agent framework growth** | LangChain 100K+ stars; dozens of frameworks (AutoGPT, CrewAI, MetaGPT, etc.) | Massive developer base needs unified Agent identity & perpetual infrastructure |
+| **Enterprise deployment** | Salesforce Agentforce, Microsoft Copilot Studio, Anthropic Claude in enterprises | Agent backup & recovery becomes a compliance requirement |
+| **Market size forecast** | 2026: $7B+ → 2030: $50B+ (Gartner) | Early participation window |
+| **Gartner prediction** | By 2027, 50% of large enterprises will deploy AI Agents | Tens of millions of Agent instances need decentralized infrastructure |
+
+**COC's differentiation**: While other AI infrastructure focuses on "training" and "inference", COC focuses on **Agent identity, operation, and perpetuity** — a domain not yet systematically addressed by any existing solution.
+
+### 1.2 Phase Goals (Calibrated to AI Agent Industry Growth Curve)
+
+OpenClaw is COC's reference Agent implementation (currently in planning); the COC protocol welcomes any DID-compliant Agent framework. Note that Agents are software instances (exponential growth), while nodes are physical infrastructure (linear growth) — their target curves differ:
+
+| Period | Phase Position | Node Target | Agent Target | Economic Indicators |
+|--------|---------------|-------------|--------------|---------------------|
+| **Year 1** (2026) | Minimum viable network + early adopters | 200+ active nodes | 10K+ registered Agents, 5+ Agent framework integrations | Testnet + gradual mainnet |
+| **Year 2** (2027) | Ecosystem sprouting + first dApps | 1,000+ nodes | 500K+ Agents, 10+ third-party implementations | TVL > $10M |
+| **Year 3** (2028) | Self-sustaining economy + commercial adoption | 5,000+ nodes | 10M+ Agents | TVL > $100M |
+| **Year 5** (2030) | One of the AI Agent industry standards | 20,000+ nodes | 100M+ Agents | TVL > $1B, economic activity $5B+ |
+| **Year 10** (2035) | Unstoppable AI infrastructure | 50,000+ nodes | 1B+ Agents | Synced with overall AI industry scale |
+
+**Goal-setting principles**:
+- **Conservative on nodes**: Constrained by Bond economics and operational complexity; follows growth curves of comparable chains (Polygon, BNB Chain) in early years
+- **Aggressive on Agents**: Agents are software — a single developer can create hundreds to thousands of Agents, matching the AI industry's exponential trajectory
+- **TVL benchmark**: References median data of L1/L2 chains (does not benchmark against Ethereum, but should exceed average for purpose-built chains)
+
+### 1.3 Alignment with AI Industry Growth Curve
+
+```
+AI Agent deployment forecast (Gartner + industry average):
+  2026: 10M  →  2027: 100M  →  2028: 500M  →  2030: 5B+
+
+COC Agent registration target (assuming 1-2% capture of global Agents):
+  2026: 10K  →  2027: 500K  →  2028: 10M   →  2030: 100M
+```
+
+Capturing 1-2% of global Agents may seem aggressive, but is justified by:
+1. Agent backup/perpetuity is a hard requirement; COC is currently the only decentralized solution
+2. DID standardization means compatibility with any Agent framework — addressable market = entire AI Agent industry
+3. Early adopter concentration is high (a few large Agent frameworks host the majority of Agent instances)
 
 ### 1.2 Three Core Target Groups
 
@@ -45,9 +82,9 @@ This document is the sister to the COC whitepaper. The whitepaper describes "wha
 | **DID Registration** | DIDRegistry + capability bitmask + delegation | Core team |
 | **AI Silicon Immortality v1** | SoulRegistry + Carrier registration + backup/recovery | Core team |
 | **OpenClaw Reference** | First DID-compatible Agent | Core team |
-| **Genesis Node Recruitment** | 50-100 early node operators | Community + Foundation |
+| **Genesis Node Recruitment** | 100-200 early node operators | Community + Foundation |
 
-**KPI**: 30 days stable mainnet + 50+ active nodes + 10K+ on-chain transactions
+**KPI**: 30 days stable mainnet + 100+ active nodes + 100K+ on-chain transactions + 1K+ Agent registrations
 
 ### Phase 2: Ecosystem Sprouting (Q3-Q4 2026)
 
@@ -63,7 +100,7 @@ This document is the sister to the COC whitepaper. The whitepaper describes "wha
 | **Persistent Testnet** | Long-running testnet for free developer use |
 | **Faucet** | Test token faucet to simplify Agent onboarding |
 
-**KPI**: 100+ nodes + 10+ third-party Agent implementations + 5+ dApps + 1M+ transactions
+**KPI**: 200+ nodes + 5+ DID-compatible Agent frameworks + 10K+ registered Agents + 5+ dApps + 1M+ transactions
 
 ### Phase 3: Ecosystem Growth (2027)
 
@@ -333,32 +370,48 @@ TBD, recommended early outreach:
 
 ## IX. Key Performance Indicators (KPIs)
 
+KPI principles: nodes follow blockchain growth curves; Agents follow AI industry exponential growth; TVL correlates with node growth.
+
 ### 9.1 Network Health
 
-| Metric | Year 1 Target | Year 3 Target | Year 5 Target |
-|--------|--------------|--------------|--------------|
-| Active nodes | 100+ | 1,000+ | 10,000+ |
-| Registered DID Agents | 1,000+ | 1M+ | 100M+ |
-| Daily transactions | 10K+ | 1M+ | 10M+ |
-| TVL | $1M+ | $50M+ | $1B+ |
-| Carrier nodes | 50+ | 500+ | 5,000+ |
+| Metric | Year 1 (2026) | Year 2 (2027) | Year 3 (2028) | Year 5 (2030) |
+|--------|--------------|--------------|--------------|--------------|
+| Active nodes | 200+ | 1,000+ | 5,000+ | 20,000+ |
+| Registered DID Agents | 10K+ | 500K+ | 10M+ | 100M+ |
+| Daily transactions | 100K+ | 5M+ | 50M+ | 500M+ |
+| TVL (USD) | testnet → $1M+ | $10M+ | $100M+ | $1B+ |
+| Carrier nodes | 100+ | 500+ | 2,000+ | 10,000+ |
+| Total bond (USD) | $10K+ | $50K+ | $250K+ | $1M+ |
 
 ### 9.2 Ecosystem Health
 
-| Metric | Year 1 | Year 3 | Year 5 |
-|--------|--------|--------|--------|
-| Funded projects | 20+ | 100+ | 500+ |
-| Third-party Agent implementations | 5+ | 20+ | 50+ |
-| dApps | 10+ | 100+ | 1,000+ |
-| Monthly active developers | 100+ | 1,000+ | 10,000+ |
+| Metric | Year 1 | Year 2 | Year 3 | Year 5 |
+|--------|--------|--------|--------|--------|
+| Funded projects | 30+ | 100+ | 300+ | 1,000+ |
+| DID-compatible Agent frameworks | 5+ | 10+ | 25+ | 50+ |
+| dApps | 10+ | 50+ | 200+ | 1,000+ |
+| Monthly active developers | 200+ | 1,000+ | 5,000+ | 25,000+ |
+| Enterprise customers | 0 | 5+ | 25+ | 100+ |
 
 ### 9.3 Governance Health
 
+| Metric | Year 1 | Year 2 | Year 3 | Year 5 |
+|--------|--------|--------|--------|--------|
+| DAO proposals | 20+ | 80+ | 200+ | 500+ |
+| Voting participation | 30%+ | 40%+ | 50%+ | 60%+ |
+| Foundation decision share | 80% | 60% | 40% | 20% |
+| Multi-client implementations | 1 | 1 | 2+ | 3+ |
+
+### 9.4 AI Industry Coupling Indicators
+
+Measures of COC's penetration into the AI Agent industry:
+
 | Metric | Year 1 | Year 3 | Year 5 |
 |--------|--------|--------|--------|
-| DAO proposals | 20+ | 100+ | 500+ |
-| Voting participation | 30%+ | 50%+ | 70%+ |
-| Foundation decision share | 80% | 50% | 20% |
+| **COC Agents / Global Agents ratio** | 0.1% | 1-2% | 2-5% |
+| **Enterprise Agent backup volume** | 100 GB+ | 100 TB+ | 10 PB+ |
+| **Decentralized resurrection success rate** | 95%+ | 99%+ | 99.9%+ |
+| **Cross-chain Agent interoperability** | 1 chain | 5+ chains | 10+ chains |
 
 ---
 
