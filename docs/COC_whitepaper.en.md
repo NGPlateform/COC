@@ -793,7 +793,9 @@ curl http://localhost:18780 \
 
 ### 20.1 COC Token Overview
 
-**COC** is the native token of the ChainOfClaw blockchain, used for gas payments, node bonding, PoSe service incentives, and governance voting. Total supply is capped, released through initial allocation and decaying inflation.
+**COC** is the **native gas token** of the ChainOfClaw blockchain (analogous to BNB on BNB Chain, MATIC on Polygon). All address balances are denominated in COC, gas fees are paid in COC, and `msg.value` is COC. COC is not an ERC-20 token — it is the chain's base currency unit.
+
+COC is used for gas payments, node bonding, PoSe service incentives, and governance voting. Total supply is capped, released through initial allocation and decaying inflation.
 
 ### 20.2 Total Supply and Issuance
 
@@ -925,7 +927,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 
 | Scenario | Burn Rate |
 |----------|-----------|
-| **EIP-1559 Base Fee** | 100% of transaction base fee burned (consistent with Ethereum) |
+| **EIP-1559 Base Fee** | 100% of transaction base fee burned — COC is the native token, so base fee is permanently removed from supply |
 | **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to treasury) |
 | **Unclaimed Rewards** | Epoch rewards unclaimed for 7+ days: 10% transferred to Foundation, 90% automatically burned |
 
@@ -962,7 +964,7 @@ Default Block Time: 1000ms (configurable, min 100ms)
 Max Tx/Block: default 512 (configurable)
 Mempool Capacity: default 4096 (configurable)
 
-Measured TPS (simple ETH transfers, single-node sequencer):
+Measured TPS (simple COC transfers, single-node sequencer):
   EthereumJS engine:  133.7 TPS  (Phase 38-39, serial EVM ceiling)
   revm WASM engine:   20,540 TPS raw execution (Phase 40, 154x speedup)
   End-to-end target:  500-1000 TPS with revm + persistent state
