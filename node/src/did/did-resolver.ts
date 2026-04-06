@@ -130,13 +130,16 @@ export function createDIDResolver(config: ResolverConfig) {
     }
 
     // Fetch supplementary data in parallel
-    const [guardians, resurrectionConfig, verificationMethods, capabilities, lineage] =
+    const extProvider = provider as DIDDataProvider & { getDIDDocumentUpdatedAt?(agentId: Hex32): Promise<number> }
+    const [guardians, resurrectionConfig, verificationMethods, capabilities, lineage, didDocumentCid, didDocUpdatedAt] =
       await Promise.all([
         provider.getGuardians(parsed.identifier),
         provider.getResurrectionConfig(parsed.identifier),
         provider.getVerificationMethods?.(parsed.identifier) ?? Promise.resolve([]),
         provider.getCapabilities?.(parsed.identifier) ?? Promise.resolve(0),
         provider.getLineage?.(parsed.identifier) ?? Promise.resolve(null),
+        provider.getDIDDocumentCid?.(parsed.identifier) ?? Promise.resolve(null),
+        extProvider.getDIDDocumentUpdatedAt?.(parsed.identifier) ?? Promise.resolve(0),
       ])
 
     const builderInput: BuilderInput = {
@@ -147,6 +150,7 @@ export function createDIDResolver(config: ResolverConfig) {
       verificationMethods: verificationMethods.length > 0 ? verificationMethods : undefined,
       capabilities: capabilities > 0 ? capabilities : undefined,
       lineage: lineage ?? undefined,
+      didDocumentCid: didDocumentCid ?? undefined,
     }
 
     const didDocument = buildDIDDocument(builderInput)
@@ -156,8 +160,12 @@ export function createDIDResolver(config: ResolverConfig) {
       deactivated: false,
     }
 
-    if (soul.lastBackupAt > 0n) {
-      metadata.updated = new Date(Number(soul.lastBackupAt) * 1000).toISOString()
+    // Use the most recent of lastBackupAt and didDocumentUpdatedAt
+    const lastBackup = Number(soul.lastBackupAt)
+    const lastDocUpdate = didDocUpdatedAt ?? 0
+    const lastUpdate = Math.max(lastBackup, lastDocUpdate)
+    if (lastUpdate > 0) {
+      metadata.updated = new Date(lastUpdate * 1000).toISOString()
     }
 
     return {

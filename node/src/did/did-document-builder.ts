@@ -81,7 +81,7 @@ function addressToBlockchainAccountId(address: string, chainId: number): string 
 }
 
 export function buildDIDDocument(input: BuilderInput): DIDDocument {
-  const { chainId, soul, guardians, resurrectionConfig, verificationMethods, capabilities, lineage, services } = input
+  const { chainId, soul, guardians, resurrectionConfig, verificationMethods, capabilities, lineage, services, didDocumentCid } = input
 
   const did = agentIdToDid(soul.agentId, chainId)
 
@@ -173,9 +173,17 @@ export function buildDIDDocument(input: BuilderInput): DIDDocument {
     }
   }
 
+  // alsoKnownAs: link to off-chain DID Document if anchored on-chain
+  // The contract stores a bytes32 hash — this is an opaque content identifier
+  // that must be resolved via CidRegistry or similar to get the actual CID
+  const alsoKnownAs = didDocumentCid && didDocumentCid !== ZERO_BYTES32
+    ? [`urn:coc:did-doc:${didDocumentCid}`]
+    : undefined
+
   const doc: DIDDocument = {
     "@context": [W3C_DID_CONTEXT, COC_DID_CONTEXT],
     id: did,
+    ...(alsoKnownAs ? { alsoKnownAs } : {}),
     controller: controllers.length === 1 ? controllers[0] : controllers,
     verificationMethod: vmEntries,
     authentication: authRefs,

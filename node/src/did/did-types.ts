@@ -48,6 +48,7 @@ export interface CocAgentMetadata {
 export interface DIDDocument {
   "@context": string[]
   id: string
+  alsoKnownAs?: string[]
   controller?: string | string[]
   verificationMethod?: VerificationMethodEntry[]
   authentication?: (string | VerificationMethodEntry)[]

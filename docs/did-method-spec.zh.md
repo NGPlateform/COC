@@ -172,60 +172,70 @@ did:coc:<chainId>:node:<nodeId>        # PoSe 节点身份
 
 ### 核心数据结构
 
+> **JSON 线上约定：** 下面的表格同时展示 Solidity 规范类型和通过 JSON-RPC 返回的实际 JSON 线上类型。线上类型由 provider 层（`node/src/did/did-data-provider.ts`）如何转换链上值决定：
+>
+> - provider 中经过 `BigInt(...)` 的字段在线上变成**十六进制字符串**（如 `500` → `"0x1f4"`），遵循 EVM RPC 的 `bigint → hex` 序列化规则。
+> - provider 中经过 `Number(...)` 的字段在线上保持为普通 **JSON number**。这对特定字段是刻意选择——当值较小且有界（例如以秒为单位的委托/凭证时间戳）时，hex-string 的开销不划算。
+> - `uint8` / `bool` 始终序列化为 JSON `number` / `boolean`。`bytes32` / `address` 始终序列化为 `0x` 前缀的十六进制字符串。
+>
+> **请始终查看 "JSON 线上类型" 列** —— 不同结构的选择不同。
+
 #### VerificationMethod（验证方法）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `keyId` | `bytes32` | 密钥标签哈希，如 `keccak256("operational")` |
-| `keyAddress` | `address` | 密钥派生的以太坊地址 |
-| `keyPurpose` | `uint8` | 位掩码：`0x01`=认证, `0x02`=断言, `0x04`=能力调用, `0x08`=能力委托 |
-| `addedAt` | `uint64` | 密钥添加时间戳 |
-| `revokedAt` | `uint64` | 撤销时间戳（`0` = 活跃） |
-| `active` | `bool` | 当前是否活跃 |
+| 字段 | Solidity 类型 | JSON 线上类型 | 说明 |
+|------|--------------|--------------|------|
+| `keyId` | `bytes32` | `string`（十六进制） | 密钥标签哈希，如 `keccak256("operational")` |
+| `keyAddress` | `address` | `string`（十六进制） | 密钥派生的以太坊地址 |
+| `keyPurpose` | `uint8` | `number` | 位掩码：`0x01`=认证, `0x02`=断言, `0x04`=能力调用, `0x08`=能力委托 |
+| `addedAt` | `uint64` | `string`（十六进制） | 密钥添加时间戳 |
+| `revokedAt` | `uint64` | `string`（十六进制） | 撤销时间戳（`0x0` = 活跃） |
+| `active` | `bool` | `boolean` | 当前是否活跃 |
 
 #### DelegationRecord（委托记录）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `delegator` | `bytes32` | 委托方的 agentId |
-| `delegatee` | `bytes32` | 被委托方的 agentId |
-| `parentDelegation` | `bytes32` | 父委托 ID（根委托为 `bytes32(0)`） |
-| `scopeHash` | `bytes32` | 规范化作用域编码的 `keccak256` |
-| `issuedAt` | `uint64` | 签发时间戳 |
-| `expiresAt` | `uint64` | 过期时间戳 |
-| `depth` | `uint8` | 链深度（0 = 直接委托） |
-| `revoked` | `bool` | 撤销标志 |
+| 字段 | Solidity 类型 | JSON 线上类型 | 说明 |
+|------|--------------|--------------|------|
+| `delegationId` | `bytes32` | `string`（十六进制） | 唯一委托 ID（由 RPC 层添加） |
+| `delegator` | `bytes32` | `string`（十六进制） | 委托方的 agentId |
+| `delegatee` | `bytes32` | `string`（十六进制） | 被委托方的 agentId |
+| `parentDelegation` | `bytes32` | `string`（十六进制） | 父委托 ID（根委托为 `bytes32(0)`） |
+| `scopeHash` | `bytes32` | `string`（十六进制） | 规范化作用域编码的 `keccak256` |
+| `issuedAt` | `uint64` | `number` | 签发时间戳（Unix 秒） |
+| `expiresAt` | `uint64` | `number` | 过期时间戳（Unix 秒） |
+| `depth` | `uint8` | `number` | 链深度（0 = 直接委托） |
+| `revoked` | `bool` | `boolean` | 撤销标志 |
+| `_readError` | — | `boolean?` | **仅 RPC 字段**：当从链上读取该委托记录失败时为 `true`。其他字段（除 `delegationId`）为零值占位。消费方应跳过或重试这些记录。 |
 
 #### EphemeralIdentity（临时身份）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `parentAgentId` | `bytes32` | 父 agent 的灵魂 ID |
-| `ephemeralAddress` | `address` | 子身份的临时地址 |
-| `scopeHash` | `bytes32` | 作用域限制哈希 |
-| `createdAt` | `uint64` | 创建时间戳 |
-| `expiresAt` | `uint64` | 自动过期时间戳 |
-| `active` | `bool` | 当前是否活跃 |
+| 字段 | Solidity 类型 | JSON 线上类型 | 说明 |
+|------|--------------|--------------|------|
+| `parentAgentId` | `bytes32` | `string`（十六进制） | 父 agent 的灵魂 ID |
+| `ephemeralAddress` | `address` | `string`（十六进制） | 子身份的临时地址 |
+| `scopeHash` | `bytes32` | `string`（十六进制） | 作用域限制哈希 |
+| `createdAt` | `uint64` | `string`（十六进制） | 创建时间戳 |
+| `expiresAt` | `uint64` | `string`（十六进制） | 自动过期时间戳 |
+| `active` | `bool` | `boolean` | 当前是否活跃 |
 
 #### Lineage（谱系）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `parentAgentId` | `bytes32` | 父 agent ID（创世 agent 为 `bytes32(0)`） |
-| `forkHeight` | `uint64` | agent 分叉时的区块高度 |
-| `generation` | `uint8` | 代数（0 = 根） |
+| 字段 | Solidity 类型 | JSON 线上类型 | 说明 |
+|------|--------------|--------------|------|
+| `parentAgentId` | `bytes32` | `string`（十六进制） | 父 agent ID（创世 agent 为 `bytes32(0)`） |
+| `forkHeight` | `uint256` | `string`（十六进制） | agent 分叉时的区块高度 |
+| `generation` | `uint16` | `number` | 代数（0 = 根） |
 
 #### CredentialAnchor（凭证锚定）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `credentialHash` | `bytes32` | 完整凭证的 `keccak256` |
-| `issuerAgentId` | `bytes32` | 签发者的灵魂 ID |
-| `subjectAgentId` | `bytes32` | 主体的灵魂 ID |
-| `credentialCid` | `bytes32` | 凭证的 IPFS CID 哈希 |
-| `issuedAt` | `uint64` | 签发时间戳 |
-| `expiresAt` | `uint64` | 过期时间戳 |
-| `revoked` | `bool` | 撤销标志 |
+| 字段 | Solidity 类型 | JSON 线上类型 | 说明 |
+|------|--------------|--------------|------|
+| `credentialHash` | `bytes32` | `string`（十六进制） | 完整凭证的 `keccak256` |
+| `issuerAgentId` | `bytes32` | `string`（十六进制） | 签发者的灵魂 ID |
+| `subjectAgentId` | `bytes32` | `string`（十六进制） | 主体的灵魂 ID |
+| `credentialCid` | `bytes32` | `string`（十六进制） | 凭证的 IPFS CID 哈希 |
+| `issuedAt` | `uint64` | `number` | 签发时间戳（Unix 秒） |
+| `expiresAt` | `uint64` | `number` | 过期时间戳（Unix 秒） |
+| `revoked` | `bool` | `boolean` | 撤销标志 |
 
 ### 常量
 
@@ -559,9 +569,9 @@ interface P2PAuthEnvelope {
 | `coc_resolveDid` | `did: string` | `DIDResolutionResult` |
 | `coc_getDIDDocument` | `agentId: string` | `DIDDocument \| null` |
 | `coc_getAgentCapabilities` | `agentId: string` | `{ capabilities: string[], bitmask: number }` |
-| `coc_getDelegations` | `agentId: string` | `DelegationRecord[]` |
-| `coc_getAgentLineage` | `agentId: string` | `Lineage` |
-| `coc_verifyCredential` | `credentialCid: string` | `VerificationResult` |
+| `coc_getDelegations` | `agentId: string` | `DelegationRecord[]`（部分读取失败时含 `_readError: true`） |
+| `coc_getAgentLineage` | `agentId: string` | `Lineage \| null` |
+| `coc_getCredentialAnchor` | `credentialId: string` | `{ valid: boolean, error?: string, anchor?: CredentialAnchor }` — 仅验证链上锚点（存在性/撤销/过期）。完整 VC 验证（签名、证明、内容）需要从 IPFS 获取凭证后使用 `verifiable-credentials.ts`。 |
 | `coc_getVerificationMethods` | `agentId: string` | `VerificationMethod[]` |
 
 ---

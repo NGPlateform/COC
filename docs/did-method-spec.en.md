@@ -172,60 +172,70 @@ Where:
 
 ### Core Data Structures
 
+> **JSON wire convention:** The tables below show both the canonical Solidity type and the actual JSON wire type returned via JSON-RPC. The wire type is determined by how the provider layer (`node/src/did/did-data-provider.ts`) converts on-chain values:
+>
+> - Fields that go through `BigInt(...)` in the provider become **hex strings** on the wire (e.g. `"0x1f4"` for `500`), following the EVM RPC `bigint → hex` serialization rule.
+> - Fields that go through `Number(...)` in the provider stay as plain **JSON numbers**. This is chosen per field for small, bounded values (e.g. delegation/credential timestamps in seconds) where hex-string overhead is not justified.
+> - `uint8` / `bool` always serialize as JSON `number` / `boolean`. `bytes32` / `address` always serialize as `0x`-prefixed hex strings.
+>
+> **Always check the "JSON Wire Type" column** — different structs make different choices.
+
 #### VerificationMethod
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `keyId` | `bytes32` | Key label hash, e.g. `keccak256("operational")` |
-| `keyAddress` | `address` | Ethereum address derived from the key |
-| `keyPurpose` | `uint8` | Bitmask: `0x01`=auth, `0x02`=assertion, `0x04`=capInvocation, `0x08`=capDelegation |
-| `addedAt` | `uint64` | Timestamp when key was added |
-| `revokedAt` | `uint64` | Timestamp when revoked (`0` = active) |
-| `active` | `bool` | Whether the key is currently active |
+| Field | Solidity Type | JSON Wire Type | Description |
+|-------|--------------|---------------|-------------|
+| `keyId` | `bytes32` | `string` (hex) | Key label hash, e.g. `keccak256("operational")` |
+| `keyAddress` | `address` | `string` (hex) | Ethereum address derived from the key |
+| `keyPurpose` | `uint8` | `number` | Bitmask: `0x01`=auth, `0x02`=assertion, `0x04`=capInvocation, `0x08`=capDelegation |
+| `addedAt` | `uint64` | `string` (hex) | Timestamp when key was added |
+| `revokedAt` | `uint64` | `string` (hex) | Timestamp when revoked (`0x0` = active) |
+| `active` | `bool` | `boolean` | Whether the key is currently active |
 
 #### DelegationRecord
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `delegator` | `bytes32` | agentId of the delegating agent |
-| `delegatee` | `bytes32` | agentId of the receiving agent |
-| `parentDelegation` | `bytes32` | Parent delegation ID (`bytes32(0)` for root) |
-| `scopeHash` | `bytes32` | `keccak256` of canonical scope encoding |
-| `issuedAt` | `uint64` | Issuance timestamp |
-| `expiresAt` | `uint64` | Expiration timestamp |
-| `depth` | `uint8` | Chain depth (0 = direct from principal) |
-| `revoked` | `bool` | Revocation flag |
+| Field | Solidity Type | JSON Wire Type | Description |
+|-------|--------------|---------------|-------------|
+| `delegationId` | `bytes32` | `string` (hex) | Unique delegation ID (added by RPC layer) |
+| `delegator` | `bytes32` | `string` (hex) | agentId of the delegating agent |
+| `delegatee` | `bytes32` | `string` (hex) | agentId of the receiving agent |
+| `parentDelegation` | `bytes32` | `string` (hex) | Parent delegation ID (`bytes32(0)` for root) |
+| `scopeHash` | `bytes32` | `string` (hex) | `keccak256` of canonical scope encoding |
+| `issuedAt` | `uint64` | `number` | Issuance timestamp (Unix seconds) |
+| `expiresAt` | `uint64` | `number` | Expiration timestamp (Unix seconds) |
+| `depth` | `uint8` | `number` | Chain depth (0 = direct from principal) |
+| `revoked` | `bool` | `boolean` | Revocation flag |
+| `_readError` | — | `boolean?` | **RPC-only field**: `true` when this delegation record could not be read from chain. Other fields (except `delegationId`) are zero-valued stubs. Consumers should skip or retry these records. |
 
 #### EphemeralIdentity
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `parentAgentId` | `bytes32` | Parent agent's soul ID |
-| `ephemeralAddress` | `address` | Temporary address for the sub-identity |
-| `scopeHash` | `bytes32` | Scope limitation hash |
-| `createdAt` | `uint64` | Creation timestamp |
-| `expiresAt` | `uint64` | Auto-expiration timestamp |
-| `active` | `bool` | Whether currently active |
+| Field | Solidity Type | JSON Wire Type | Description |
+|-------|--------------|---------------|-------------|
+| `parentAgentId` | `bytes32` | `string` (hex) | Parent agent's soul ID |
+| `ephemeralAddress` | `address` | `string` (hex) | Temporary address for the sub-identity |
+| `scopeHash` | `bytes32` | `string` (hex) | Scope limitation hash |
+| `createdAt` | `uint64` | `string` (hex) | Creation timestamp |
+| `expiresAt` | `uint64` | `string` (hex) | Auto-expiration timestamp |
+| `active` | `bool` | `boolean` | Whether currently active |
 
 #### Lineage
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `parentAgentId` | `bytes32` | Parent agent ID (`bytes32(0)` for genesis) |
-| `forkHeight` | `uint64` | Block height at which the agent was forked |
-| `generation` | `uint8` | Generation number (0 = root) |
+| Field | Solidity Type | JSON Wire Type | Description |
+|-------|--------------|---------------|-------------|
+| `parentAgentId` | `bytes32` | `string` (hex) | Parent agent ID (`bytes32(0)` for genesis) |
+| `forkHeight` | `uint256` | `string` (hex) | Block height at which the agent was forked |
+| `generation` | `uint16` | `number` | Generation number (0 = root) |
 
 #### CredentialAnchor
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `credentialHash` | `bytes32` | `keccak256` of the full credential |
-| `issuerAgentId` | `bytes32` | Issuer's soul ID |
-| `subjectAgentId` | `bytes32` | Subject's soul ID |
-| `credentialCid` | `bytes32` | IPFS CID hash of the credential |
-| `issuedAt` | `uint64` | Issuance timestamp |
-| `expiresAt` | `uint64` | Expiration timestamp |
-| `revoked` | `bool` | Revocation flag |
+| Field | Solidity Type | JSON Wire Type | Description |
+|-------|--------------|---------------|-------------|
+| `credentialHash` | `bytes32` | `string` (hex) | `keccak256` of the full credential |
+| `issuerAgentId` | `bytes32` | `string` (hex) | Issuer's soul ID |
+| `subjectAgentId` | `bytes32` | `string` (hex) | Subject's soul ID |
+| `credentialCid` | `bytes32` | `string` (hex) | IPFS CID hash of the credential |
+| `issuedAt` | `uint64` | `number` | Issuance timestamp (Unix seconds) |
+| `expiresAt` | `uint64` | `number` | Expiration timestamp (Unix seconds) |
+| `revoked` | `bool` | `boolean` | Revocation flag |
 
 ### Constants
 
@@ -559,9 +569,9 @@ New fields in `config.ts`:
 | `coc_resolveDid` | `did: string` | `DIDResolutionResult` |
 | `coc_getDIDDocument` | `agentId: string` | `DIDDocument \| null` |
 | `coc_getAgentCapabilities` | `agentId: string` | `{ capabilities: string[], bitmask: number }` |
-| `coc_getDelegations` | `agentId: string` | `DelegationRecord[]` |
-| `coc_getAgentLineage` | `agentId: string` | `Lineage` |
-| `coc_verifyCredential` | `credentialCid: string` | `VerificationResult` |
+| `coc_getDelegations` | `agentId: string` | `DelegationRecord[]` (includes `_readError: true` on partial read failures) |
+| `coc_getAgentLineage` | `agentId: string` | `Lineage \| null` |
+| `coc_getCredentialAnchor` | `credentialId: string` | `{ valid: boolean, error?: string, anchor?: CredentialAnchor }` — checks on-chain anchor only (existence/revocation/expiry). Full VC verification (signatures, proofs, content) requires fetching the credential from IPFS and using `verifiable-credentials.ts`. |
 | `coc_getVerificationMethods` | `agentId: string` | `VerificationMethod[]` |
 
 ---
