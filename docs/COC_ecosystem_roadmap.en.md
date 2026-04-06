@@ -59,7 +59,7 @@ Capturing 1-2% of global Agents may seem aggressive, but is justified by:
 2. DID standardization means compatibility with any Agent framework — addressable market = entire AI Agent industry
 3. Early adopter concentration is high (a few large Agent frameworks host the majority of Agent instances)
 
-### 1.2 Three Core Target Groups
+### 1.4 Three Core Target Groups
 
 | Group | Value Proposition | Interaction |
 |-------|------------------|-------------|
