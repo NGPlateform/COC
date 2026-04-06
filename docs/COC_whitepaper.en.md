@@ -625,35 +625,39 @@ Web3's decentralized architecture provides the foundational capabilities that ce
 | **Accountability** | Platform-mediated disputes | Smart contract-enforced penalties |
 | **Continuity** | No mechanism | Carrier-based resurrection with guardian oversight |
 
-### 13.3 COC's Approach: Three Pillars
+### 13.3 COC's Approach: Three Foundational Services
 
-COC addresses the AI Agent safety challenge through three integrated systems:
+COC addresses these challenges through three foundational services (consistent with the Executive Summary). Governance boundaries (delegation depth, cascading revocation, guardian quorum) act as horizontal security mechanisms threading through all three:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    COC Agent Safety Framework                │
-├───────────────────┬───────────────────┬─────────────────────┤
-│   Pillar 1        │   Pillar 2        │   Pillar 3          │
-│   IDENTITY        │   CONTINUITY      │   GOVERNANCE        │
-│   (did:coc DID)   │   (Silicon        │   (Delegation &     │
-│                   │    Immortality)   │    Boundaries)      │
-├───────────────────┼───────────────────┼─────────────────────┤
-│ • Self-sovereign  │ • Auto backup     │ • Capability flags  │
-│   keys            │ • On-chain anchor │ • Scope-limited     │
-│ • Key rotation    │ • IPFS storage    │   delegation        │
-│ • Capability      │ • Social recovery │ • Depth-limited     │
-│   bitmask         │ • Carrier-based   │   chain (max 3)     │
-│ • Verifiable      │   resurrection    │ • Cascading         │
-│   credentials     │ • Heartbeat       │   revocation        │
-│ • Agent lineage   │   monitoring      │ • Guardian quorum   │
-└───────────────────┴───────────────────┴─────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                COC AI Agent Foundational Services             │
+├──────────────────┬───────────────────┬────────────────────────┤
+│  Service 1        │  Service 2        │  Service 3             │
+│  P2P File Storage │  DID Identity     │  AI Silicon Immortality│
+│                   │  (did:coc)        │                        │
+├──────────────────┼───────────────────┼────────────────────────┤
+│ • IPFS content    │ • Self-sovereign  │ • Auto backup          │
+│   addressing      │   keys            │ • On-chain anchor      │
+│ • PoSe v2 verify  │ • Capability      │ • Social recovery      │
+│ • Censorship      │   bitmask         │   (2/3 guardians)      │
+│   resistance      │ • Delegation      │ • Cross-carrier        │
+│ • Merkle proofs   │   chain (≤3)      │   resurrection         │
+│ • Persistent data │ • Verifiable      │ • Heartbeat monitor    │
+│                   │   credentials     │                        │
+└──────────────────┴───────────────────┴────────────────────────┘
 ```
 
-1. **Identity (DID)**: Every agent has a W3C-compliant decentralized identifier (`did:coc`) with verifiable capabilities and key hierarchy — preventing impersonation and scope violation.
+1. **P2P File Storage**: AI Agent data (memory, conversations, working state) is stored via IPFS content addressing with availability verified by PoSe v2 challenges — answering "Where does the data live?"
 
-2. **Continuity (AI Silicon Immortality)**: Agents' state is continuously backed up to IPFS with on-chain anchoring, enabling resurrection on any compatible carrier when the original host fails.
+2. **DID Identity (did:coc)**: Every Agent has a W3C-compliant decentralized identifier with self-sovereign keys, capability bitmask, and scope-limited delegation — answering "Who is the Agent and what can it do?"
 
-3. **Governance (Delegation & Boundaries)**: Smart contracts enforce capability boundaries, delegation scope limits, and guardian-based recovery — preventing both agent overreach and unauthorized termination.
+3. **AI Silicon Immortality**: Agent state is continuously backed up and on-chain anchored, with cross-carrier resurrection on host failure — answering "How does an Agent achieve immortality?"
+
+**Horizontal Security Mechanisms** (across all three services):
+- Capability bitmask declaration (each Agent can only exercise declared capabilities)
+- Delegation chain depth limit (≤3) and cascading revocation
+- Guardian quorum (2/3) and time-locked recovery
 
 ---
 
