@@ -28,8 +28,8 @@ COC is also a general-purpose blockchain supporting EVM smart contracts, JSON-RP
 ### 1.1 Core Mission
 
 COC's mission is:
-> **Make decentralization truly practical for ordinary users**
-> From "buy hardware + run complex ops" → "run a reliable node + AI agents automate"
+> **Designed for AI Agents, developed by AI Agents, operated by AI Agents, serving AI Agents, granting AI Agents immortality.**
+> **Building the decentralized infrastructure for AI.**
 
 ### 1.2 Design Goals
 
