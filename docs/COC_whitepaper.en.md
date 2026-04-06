@@ -851,11 +851,11 @@ Protocol's long-term goal: rely increasingly on fees and service markets.
 
 | Category | Share | Amount | Lock/Vesting |
 |----------|-------|--------|-------------|
-| **Community & Ecosystem Fund** | 8% | 80,000,000 | Ecosystem grants, hackathons, developer incentives, partner integrations; released via DAO governance |
+| **Foundation Operations** | 6% | 60,000,000 | Foundation daily operations, core development, legal compliance, audits, ecosystem promotion; released on quarterly budget |
 | **Core Team** | 5% | 50,000,000 | 12-month cliff + 36-month linear vesting |
+| **Community & Ecosystem Fund** | 3.5% | 35,000,000 | Ecosystem grants, hackathons, developer incentives, partner integrations; released via DAO governance |
 | **Early Contributors** | 3% | 30,000,000 | 6-month cliff + 24-month linear vesting |
 | **Treasury Reserve** | 2.5% | 25,000,000 | On-chain multisig vault for emergency security response, cross-chain bridge liquidity, strategic reserve |
-| **Foundation Operations** | 1.5% | 15,000,000 | Foundation daily operations, legal compliance, audit costs; released on quarterly budget |
 
 ### 20.4 PoSe Mining Release (80% of Supply)
 
@@ -921,7 +921,7 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 | Item | Description |
 |------|-------------|
 | **Role** | Non-profit entity responsible for protocol development, ecosystem growth, and compliance |
-| **Funding Sources** | Genesis allocation 1.5%, released on quarterly budget |
+| **Funding Sources** | Genesis allocation 6% + 10% of unclaimed expired rewards |
 | **Usage Scope** | Core developer salaries, security audits, legal compliance, community events, brand promotion |
 | **Governance Evolution** | Decision authority gradually transfers to DAO after mainnet Year 1; Foundation transitions to execution role |
 | **Audit** | Quarterly financial reports published publicly; annual third-party audit |
@@ -943,7 +943,7 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 |----------|-----------|
 | **EIP-1559 Base Fee** | 100% of transaction base fee burned (consistent with Ethereum) |
 | **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to treasury) |
-| **Unclaimed Rewards** | Epoch rewards unclaimed for 90+ days are automatically burned |
+| **Unclaimed Rewards** | Epoch rewards unclaimed for 90+ days: 10% transferred to Foundation, 90% automatically burned |
 
 When network usage grows sufficiently, the burn rate will exceed the inflation release rate, making COC a **deflationary asset**.
 
