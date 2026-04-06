@@ -945,7 +945,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | Item | Description |
 |------|-------------|
 | **Management** | On-chain multisig contract (3/5 threshold) |
-| **Funding Sources** | Genesis allocation 2.5% + 20% of penalty revenue (insurance fund portion of PoSe slashing) |
+| **Funding Sources** | Genesis allocation 2.5% + DAO governance allocations (insurance fund is separate from treasury) |
 | **Usage Scope** | Security incident response, protocol upgrade incentives, cross-chain bridge liquidity seeding, bug bounties |
 | **Governance Constraint** | Single expenditure exceeding 5% of treasury balance requires DAO proposal vote (>50% approval) |
 | **Ecosystem Transfer** | DAO can vote to transfer Treasury funds to Community Ecosystem Fund for ecosystem building needs |
@@ -979,7 +979,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | Scenario | Burn Rate |
 |----------|-----------|
 | **EIP-1559 Base Fee** | 100% of transaction base fee burned — COC is the native token, so base fee is permanently removed from supply |
-| **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to treasury) |
+| **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to insurance fund) |
 | **Unclaimed Rewards** | Epoch rewards unclaimed for 7+ days: 10% transferred to Foundation, 90% automatically burned |
 
 ### 19.9 Long-Term Economic Equilibrium
