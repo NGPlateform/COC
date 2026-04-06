@@ -842,24 +842,30 @@ Protocol's long-term goal: rely increasingly on fees and service markets.
 | Metric | Value |
 |--------|-------|
 | **Total Supply Cap** | 1,000,000,000 COC (1 billion) |
-| **Initial Circulation** | 200,000,000 COC (20%, minted at genesis) |
-| **Inflation Release** | 800,000,000 COC (80%, via PoSe mining + block rewards, released annually) |
-| **Inflation Decay** | Year 1: 8% → Year 4: 3% → Long-term: 2% (approaching zero issuance) |
+| **Initial Circulation** | 250,000,000 COC (25%, minted at genesis) |
+| **PoSe Mining Release** | 750,000,000 COC (75%, via service verification, released annually) |
+| **Inflation Decay** | Year 0: 5% → Year 3: 2.5% → Long-term: 2% |
 | **Smallest Unit** | 1 wei = 10^-18 COC |
 
-### 20.3 Initial Allocation (Genesis 20%)
+### 20.3 Initial Allocation (Genesis 25%)
 
 | Category | Share | Amount | Lock/Vesting |
 |----------|-------|--------|-------------|
-| **Foundation Operations** | 6% | 60,000,000 | Foundation daily operations, core development, legal compliance, audits, ecosystem promotion; released on quarterly budget |
+| **Community & Ecosystem Fund** | 8% | 80,000,000 | Ecosystem grants, hackathons, developer incentives, partner integrations; released via DAO governance; can be supplemented from Treasury via DAO proposal |
+| **Foundation Operations** | 6% | 60,000,000 | Year 1: 1.5% released (startup operations) + remaining 4.5% on 48-month linear vesting |
 | **Core Team** | 5% | 50,000,000 | 12-month cliff + 36-month linear vesting |
-| **Community & Ecosystem Fund** | 3.5% | 35,000,000 | Ecosystem grants, hackathons, developer incentives, partner integrations; released via DAO governance |
-| **Early Contributors** | 3% | 30,000,000 | 6-month cliff + 24-month linear vesting |
-| **Treasury Reserve** | 2.5% | 25,000,000 | On-chain multisig vault for emergency security response, cross-chain bridge liquidity, strategic reserve |
+| **Early Contributors & Strategic Partners** | 3.5% | 35,000,000 | 6-month cliff + 24-month linear vesting; includes strategic investor allocation |
+| **Treasury Reserve** | 2.5% | 25,000,000 | On-chain multisig vault for security response, bridge liquidity, strategic reserve; DAO governance can transfer to Ecosystem Fund |
 
-### 20.4 PoSe Mining Release (80% of Supply)
+**Design Rationale:**
+- **Community at 8%**: Aligned with industry median, ensuring long-term ecosystem building funds
+- **Foundation tiered release**: Only 1.5% available in Year 1, preventing large one-time sell pressure
+- **Strategic partner reserve**: Early contributor share includes future fundraising capacity without modifying overall allocation
+- **Treasury↔Ecosystem link**: DAO governance can transfer from Treasury to Ecosystem Fund to adapt to changing needs
 
-The remaining 80% (800M COC) is released automatically through the PoSe service verification mechanism. **Minting is entirely controlled by smart contracts** with no manual intervention:
+### 20.4 PoSe Mining Release (75% of Supply)
+
+The remaining 75% (750M COC) is released automatically through the PoSe service verification mechanism. **Minting is entirely controlled by smart contracts** with no manual intervention:
 
 **On-Chain Minting Flow (automatic each epoch):**
 
@@ -870,8 +876,8 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 │  1. Relayer calls PoSeManagerV2.finalizeEpochV2()          │
 │  2. Contract calls EmissionSchedule.getEpochEmission()     │
 │     → Calculates current year from epochId → lookups       │
-│       decay rate → computes epoch emission → checks        │
-│       against 800M hard cap                                │
+│       decay rate → adjusts by active node count            │
+│     → Checks against 750M hard cap                        │
 │  3. Contract calls COCToken.mint(rewardPool, emission)     │
 │     → Mints new tokens into reward pool                    │
 │  4. Contract distributes pool to three buckets:            │
@@ -884,26 +890,43 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 
 **Decay Emission Rates:**
 
-| Year | Annual Rate | Per Epoch | Annual Total |
-|------|-----------|-----------|-------------|
-| Year 0 | 8.0% | ~9,132 COC | ~80,000,000 |
-| Year 1 | 6.0% | ~6,849 COC | ~60,000,000 |
-| Year 2 | 4.0% | ~4,566 COC | ~40,000,000 |
-| Year 3 | 3.0% | ~3,424 COC | ~30,000,000 |
-| Year 4+ | 2.0% | ~2,283 COC | ~20,000,000/yr |
+| Year | Base Annual Rate | Max Per Epoch | Max Annual Total |
+|------|-----------------|--------------|-----------------|
+| Year 0 | 5.0% | ~4,281 COC | ~37,500,000 |
+| Year 1 | 4.0% | ~3,424 COC | ~30,000,000 |
+| Year 2 | 3.0% | ~2,568 COC | ~22,500,000 |
+| Year 3 | 2.5% | ~2,140 COC | ~18,750,000 |
+| Year 4+ | 2.0% | ~1,712 COC | ~15,000,000/yr |
+
+**Node Activity Multiplier:**
+
+To prevent a small number of early nodes from capturing excessive tokens, actual emission is adjusted by active node participation:
+
+```
+actual_emission = base_emission × min(activeNodes / TARGET_NODE_COUNT, 1.0)
+
+TARGET_NODE_COUNT = 100 (adjustable via governance)
+
+Examples:
+  10 active nodes → 10% of base emission released
+  50 active nodes → 50% released
+  100+ nodes      → 100% (full emission)
+```
+
+Unreleased tokens do not accumulate — when nodes are insufficient, inflation automatically decreases, protecting early holders from dilution.
 
 **Security Guarantees:**
 - `COCToken.mint()` callable only by PoSeManagerV2 (`onlyMinter` modifier)
-- Cumulative minting hard-capped at 800M; `getEpochEmission()` returns 0 when reached
+- Cumulative minting hard-capped at 750M; `getEpochEmission()` returns 0 when reached
 - No manual minting interface; all issuance determined by contract logic
-- Estimated ~43 years until mining supply exhaustion
+- Estimated ~50 years until mining supply exhaustion (longer with node multiplier effect)
 
 **Three-Contract Architecture:**
 
 | Contract | Responsibility |
 |----------|---------------|
 | `COCToken.sol` | ERC-20 token, 1B total supply cap, minter role access control |
-| `EmissionSchedule.sol` | Pure calculation library, computes decay emission per epoch |
+| `EmissionSchedule.sol` | Pure calculation library, computes decay emission per epoch with node multiplier |
 | `PoSeManagerV2.sol` | Calls mint in `finalizeEpochV2()`, injects into reward pool |
 
 ### 20.5 Treasury
@@ -914,6 +937,7 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 | **Funding Sources** | Genesis allocation 2.5% + 20% of penalty revenue (insurance fund portion of PoSe slashing) |
 | **Usage Scope** | Security incident response, protocol upgrade incentives, cross-chain bridge liquidity seeding, bug bounties |
 | **Governance Constraint** | Single expenditure exceeding 5% of treasury balance requires DAO proposal vote (>50% approval) |
+| **Ecosystem Transfer** | DAO can vote to transfer Treasury funds to Community Ecosystem Fund for ecosystem building needs |
 | **Transparency** | All expenditures executed via on-chain transactions, publicly auditable |
 
 ### 20.6 Foundation
@@ -921,10 +945,12 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 | Item | Description |
 |------|-------------|
 | **Role** | Non-profit entity responsible for protocol development, ecosystem growth, and compliance |
-| **Funding Sources** | Genesis allocation 6% + 10% of unclaimed expired rewards |
+| **Genesis Allocation** | 6%: Year 1 release 1.5% (15M) + remaining 4.5% (45M) on 48-month linear vesting |
+| **Ongoing Funding** | 10% of unclaimed expired rewards automatically transferred to Foundation |
 | **Usage Scope** | Core developer salaries, security audits, legal compliance, community events, brand promotion |
 | **Governance Evolution** | Decision authority gradually transfers to DAO after mainnet Year 1; Foundation transitions to execution role |
 | **Audit** | Quarterly financial reports published publicly; annual third-party audit |
+| **Spending Cap** | Quarterly spending must not exceed 15% of Foundation holdings, preventing short-term overconsumption |
 
 ### 20.7 Token Utility
 
@@ -943,19 +969,29 @@ The remaining 80% (800M COC) is released automatically through the PoSe service 
 |----------|-----------|
 | **EIP-1559 Base Fee** | 100% of transaction base fee burned (consistent with Ethereum) |
 | **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to treasury) |
-| **Unclaimed Rewards** | Epoch rewards unclaimed for 90+ days: 10% transferred to Foundation, 90% automatically burned |
-
-When network usage grows sufficiently, the burn rate will exceed the inflation release rate, making COC a **deflationary asset**.
+| **Unclaimed Rewards** | Epoch rewards unclaimed for 180+ days: 10% transferred to Foundation, 90% automatically burned |
 
 ### 20.9 Long-Term Economic Equilibrium
 
 ```
-Year 1-3:  Inflation > Burn → Net issuance (incentivize early participation)
-Year 3-5:  Inflation ≈ Burn → Stable supply (network maturity)
-Year 5+:   Inflation < Burn → Net deflation (fee-driven sustainable economy)
+Phase 1 (Year 0-3):   Inflation > Burn → Net issuance (incentivize early participation, build node network)
+Phase 2 (Year 3-7):   Inflation gradually decreases → Supply growth slows (network maturity)
+Phase 3 (Year 7+):    Transaction fee burn + slash burn → Trending toward supply-demand equilibrium
+Long-term goal:        Fee-revenue-driven sustainable economy, inflation subsidies gradually phased out
 ```
 
-The goal is to achieve a **self-sustaining fee economy** within 3-5 years of mainnet launch, eliminating dependence on inflation subsidies.
+> **Note:** The deflation tipping point depends on actual network usage. Using EIP-1559 burn as example, sustained on-chain transaction volume is required to offset inflation release. This design does not promise a fixed deflation timeline, but rather establishes an economic structure trending toward equilibrium through decaying inflation + multi-channel burn.
+
+### 20.10 Design Trade-offs and Rationale
+
+| Design Choice | Rationale | Alternatives & Trade-offs |
+|---------------|-----------|--------------------------|
+| Mining 75% (not 80%) | Increases genesis community share to 8%, ensuring ecosystem building funds | 80% mining more attractive to miners, but insufficient ecosystem fund |
+| Foundation tiered release | Prevents large one-time sell pressure impacting market | No lockup is more flexible, but reduces market confidence |
+| Year 0 inflation 5% (not 8%) | Reduces sell pressure concentration among few early nodes | Higher inflation incentivizes early participation more, but greater dilution risk |
+| Node activity multiplier | Automatically reduces emission when few nodes, protecting holders | Fixed emission is simpler, but high early concentration |
+| 180-day expiry (not 90) | Gives operators sufficient time for key rotation and upgrades | Shorter window accelerates burn, but harms small operators |
+| Treasury↔Ecosystem transferable | Flexibility to adapt to long-term changing needs | Fixed allocation more predictable, but less flexible |
 
 ---
 
