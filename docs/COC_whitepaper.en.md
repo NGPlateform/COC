@@ -859,21 +859,52 @@ Protocol's long-term goal: rely increasingly on fees and service markets.
 
 ### 20.4 PoSe Mining Release (80% of Supply)
 
-The remaining 80% is released through the PoSe service verification mechanism, rewarding node operators who provide verifiable services:
+The remaining 80% (800M COC) is released automatically through the PoSe service verification mechanism. **Minting is entirely controlled by smart contracts** with no manual intervention:
+
+**On-Chain Minting Flow (automatic each epoch):**
 
 ```
-Per Epoch (1 hour) release:
-  R_epoch = R_fees + R_inflation
-
-  R_inflation = annual_inflation_rate × total_supply / (365 × 24)
-
-  Distributed to three reward buckets:
-    B1 (60%): Uptime + RPC availability
-    B2 (30%): Storage and data availability
-    B3 (10%): Relay support
+┌────────────────────────────────────────────────────────────┐
+│ Every Epoch (1 hour) at settlement:                        │
+│                                                            │
+│  1. Relayer calls PoSeManagerV2.finalizeEpochV2()          │
+│  2. Contract calls EmissionSchedule.getEpochEmission()     │
+│     → Calculates current year from epochId → lookups       │
+│       decay rate → computes epoch emission → checks        │
+│       against 800M hard cap                                │
+│  3. Contract calls COCToken.mint(rewardPool, emission)     │
+│     → Mints new tokens into reward pool                    │
+│  4. Contract distributes pool to three buckets:            │
+│     B1 (60%): Uptime + RPC availability                   │
+│     B2 (30%): Storage and data availability                │
+│     B3 (10%): Relay support                                │
+│  5. Node operators claim via Merkle proof                  │
+└────────────────────────────────────────────────────────────┘
 ```
 
-**Release rate is driven by actual service**: no mining (no service) means no release. This ensures token release is synchronized with network value growth.
+**Decay Emission Rates:**
+
+| Year | Annual Rate | Per Epoch | Annual Total |
+|------|-----------|-----------|-------------|
+| Year 0 | 8.0% | ~9,132 COC | ~80,000,000 |
+| Year 1 | 6.0% | ~6,849 COC | ~60,000,000 |
+| Year 2 | 4.0% | ~4,566 COC | ~40,000,000 |
+| Year 3 | 3.0% | ~3,424 COC | ~30,000,000 |
+| Year 4+ | 2.0% | ~2,283 COC | ~20,000,000/yr |
+
+**Security Guarantees:**
+- `COCToken.mint()` callable only by PoSeManagerV2 (`onlyMinter` modifier)
+- Cumulative minting hard-capped at 800M; `getEpochEmission()` returns 0 when reached
+- No manual minting interface; all issuance determined by contract logic
+- Estimated ~43 years until mining supply exhaustion
+
+**Three-Contract Architecture:**
+
+| Contract | Responsibility |
+|----------|---------------|
+| `COCToken.sol` | ERC-20 token, 1B total supply cap, minter role access control |
+| `EmissionSchedule.sol` | Pure calculation library, computes decay emission per epoch |
+| `PoSeManagerV2.sol` | Calls mint in `finalizeEpochV2()`, injects into reward pool |
 
 ### 20.5 Treasury
 
