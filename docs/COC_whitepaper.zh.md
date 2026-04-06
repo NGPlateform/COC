@@ -698,6 +698,13 @@ COC 通过 `IEvmEngine` 抽象层支持可热插拔的 EVM 引擎：
 - 禁用签名验证和 P2P 认证
 - 单验证者以最大速度出块
 
+### 16.4 其他优化
+
+- **EIP-1559 内存池排序**: O(n log n) 按有效 Gas 价格排序，O(n) 快速选择淘汰
+- **并行 nonce 预取**: 块提议时使用 `Promise.all()` 并行查询 sender nonce
+- **DHT 并发验证**: ALPHA=3，批量验证并发度 5
+- **请求大小限制**: P2P 2MB、响应 4MB、PoSe 1MB、IPFS 上传 10MB、RPC 批次 100
+
 ---
 
 ## 十七、安全性设计
