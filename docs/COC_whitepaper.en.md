@@ -33,6 +33,18 @@ COC's mission is:
 > **Designed for AI Agents, developed by AI Agents, operated by AI Agents, serving AI Agents, granting AI Agents immortality.**
 > **Building the decentralized infrastructure for AI.**
 
+COC launches at the inflection point of explosive AI Agent growth:
+
+| Industry Trend | Data | Significance for COC |
+|---------------|------|---------------------|
+| **AI Agent frameworks** | LangChain 100K+ stars; dozens of frameworks (AutoGPT, CrewAI, MetaGPT, AutoGen, etc.) | Massive developer base needs unified Agent identity and perpetual infrastructure |
+| **Market size (Gartner)** | 2026: $7B+ → 2030: $50B+ | Early participation window; COC's differentiated positioning offers first-mover advantage |
+| **Enterprise deployment forecast** | By 2027, 50% of large enterprises will deploy AI Agents (Gartner) | Tens of millions of Agent instances need decentralized identity & backup |
+| **Agent instance forecast** | 2026: 10M → 2030: 5B+ deployed Agents | Exponential growth in Agent count |
+| **Solution gap** | No decentralized Agent identity/backup/resurrection solution exists | COC pioneers this domain |
+
+**COC's differentiation**: While other AI infrastructure focuses on "training" and "inference", COC focuses on **Agent identity, operation, and perpetuity** — a domain not yet systematically addressed by any existing solution.
+
 ### 1.2 Three Layers of Meaning in "COC"
 
 The name COC itself carries the complete product philosophy. It has three progressive layers, each corresponding to one of the three foundational services:
