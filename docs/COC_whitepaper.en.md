@@ -708,40 +708,12 @@ For L2 rollup deployment, `nodeMode: "sequencer"` strips all consensus overhead:
 - Disables signature enforcement and P2P auth
 - Single validator produces all blocks at maximum speed
 
-### 16.4 Mempool Optimization
+### 16.4 Additional Optimizations
 
-**EIP-1559 Sorting**:
-- Sort by effective gas price: `min(maxFeePerGas, baseFee + maxPriorityFeePerGas)`
-- O(n log n) initial sort, incremental updates
-
-**Eviction Strategy**:
-- Remove lowest-fee when capacity exceeded (default 4096)
-- O(n) quickselect
-
-### 13.2 Block Proposal Acceleration
-
-**Parallel Nonce Prefetch**:
-```typescript
-const nonces = await Promise.all(
-  accounts.map(a => getPendingNonce(a))
-)
-```
-
-### 13.3 DHT Optimization
-
-**Concurrent Peer Verification**: `ALPHA=3`, batch verification concurrency 5
-
-**Periodic Refresh**: Every 5 minutes
-
-### 13.4 Request Size Limits
-
-```typescript
-const P2P_MAX_REQUEST_BODY = 2MB
-const P2P_MAX_RESPONSE_BODY = 4MB
-const POSE_MAX_BODY = 1MB
-const IPFS_MAX_UPLOAD = 10MB
-const RPC_BATCH_MAX = 100
-```
+- **EIP-1559 mempool sorting**: O(n log n) by effective gas price, O(n) quickselect eviction
+- **Parallel nonce prefetch**: `Promise.all()` for sender nonce lookups during block proposal
+- **DHT concurrent verification**: ALPHA=3, batch verification concurrency 5
+- **Request size limits**: P2P 2MB, response 4MB, PoSe 1MB, IPFS upload 10MB, RPC batch 100
 
 ---
 
@@ -817,21 +789,7 @@ curl http://localhost:18780 \
 
 ---
 
-## XIX. Inflation Schedule (Bootstrap Subsidy)
-
-COC may use a decaying inflation schedule to bootstrap early participation:
-
-- **Year 1**: ~8%
-- **Year 2**: ~6%
-- **Year 3**: ~4%
-- **Year 4**: ~3%
-- **Long-term**: ~2% or gradual decline
-
-Protocol's long-term goal: rely increasingly on fees and service markets.
-
----
-
-## XX. Tokenomics
+## XIX. Tokenomics
 
 ### 20.1 COC Token Overview
 
@@ -995,7 +953,7 @@ Long-term goal:        Fee-revenue-driven sustainable economy, inflation subsidi
 
 ---
 
-## XXI. Key Metrics
+## XX. Key Metrics
 
 ### 17.1 Blockchain Performance
 
@@ -1037,7 +995,7 @@ Pin Management: incremental maintenance
 
 ---
 
-## XXII. Comparison with Other Solutions
+## XXI. Comparison with Other Solutions
 
 ### 18.1 vs Mainstream Blockchains
 
@@ -1065,7 +1023,7 @@ Pin Management: incremental maintenance
 
 ---
 
-## XXIII. Roadmap
+## XXII. Roadmap
 
 - **v0.1**: PoSe contracts + node registry + U/S challenges + receipt formats
 - **v0.2**: Off-chain aggregation + on-chain batch commitments + dispute window
