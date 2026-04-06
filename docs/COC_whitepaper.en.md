@@ -969,7 +969,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 |----------|-----------|
 | **EIP-1559 Base Fee** | 100% of transaction base fee burned (consistent with Ethereum) |
 | **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to treasury) |
-| **Unclaimed Rewards** | Epoch rewards unclaimed for 180+ days: 10% transferred to Foundation, 90% automatically burned |
+| **Unclaimed Rewards** | Epoch rewards unclaimed for 7+ days: 10% transferred to Foundation, 90% automatically burned |
 
 ### 20.9 Long-Term Economic Equilibrium
 
@@ -990,7 +990,7 @@ Long-term goal:        Fee-revenue-driven sustainable economy, inflation subsidi
 | Foundation tiered release | Prevents large one-time sell pressure impacting market | No lockup is more flexible, but reduces market confidence |
 | Year 0 inflation 5% (not 8%) | Reduces sell pressure concentration among few early nodes | Higher inflation incentivizes early participation more, but greater dilution risk |
 | Node activity multiplier | Automatically reduces emission when few nodes, protecting holders | Fixed emission is simpler, but high early concentration |
-| 180-day expiry (not 90) | Gives operators sufficient time for key rotation and upgrades | Shorter window accelerates burn, but harms small operators |
+| 7-day expiry window | AI Agents automate node maintenance — no need for long human-scale redundancy; accelerates unclaimed reward burn cycle | Longer window friendlier for manual ops, but COC assumes AI Agent automation |
 | Treasury↔Ecosystem transferable | Flexibility to adapt to long-term changing needs | Fixed allocation more predictable, but less flexible |
 
 ---
