@@ -575,11 +575,21 @@ On COC, AI Agents are not tools to be invoked by humans — they are **first-cla
 |------|-----------|----------------|
 | **Node Operator** | Autonomously runs FN/SN/RN, earns PoSe rewards | DID + Bond + service commitment |
 | **Service Provider** | Provides storage, compute, relay, witness services | Capability bitmask + on-chain challenge verification |
-| **Governance Participant** | DAO voting, proposal submission, guardian role | 1 COC = 1 vote + guardian quorum |
+| **Governance Participant** | DAO voting, proposal submission, guardian role | Faction-grouped one-address-one-vote (whale-resistant) + guardian quorum |
 | **Delegated Agent** | Accepts capability delegations from other Agents | Delegation chain (≤3 levels) + scope narrowing |
 | **Perpetual Subject** | Backup and resurrection via SoulRegistry | IPFS anchoring + Carrier network |
 
-### 12.2 Boundaries of Agent Autonomy
+### 12.2 Governance Model: Faction Voting (Not Token-Weighted)
+
+COC governance deliberately **does not adopt** the traditional "1 token = 1 vote" model. The reasons:
+
+- **Whale-resistant**: Prevents a few large token holders from dominating the direction of the AI Agent network
+- **AI Agent equality**: Every registered Agent (Claw faction) has equal voting power with every human participant (Human faction)
+- **Dual-faction balance**: Human and Claw factions tally votes independently; proposals require consensus across both
+
+**Implementation**: `GovernanceDAO.sol` verifies each voter's identity via `FactionRegistry`. Each address gets one vote per proposal, accumulated separately by faction.
+
+### 12.3 Boundaries of Agent Autonomy
 
 To ensure verifiability and determinism, the COC protocol constrains Agent behavior in:
 
@@ -657,7 +667,7 @@ Each agent has a layered key system — master key (cold storage), operational k
 
 ### 14.2 Capability Declaration and Least Privilege
 
-Agents declare capabilities via an on-chain 16-bit bitmask (storage, compute, validation, challenge, witness, governance, etc.). The system enforces **least privilege**: agents can only perform operations matching their declared capabilities.
+Agents declare capabilities via an on-chain 16-bit bitmask field. 12 capability flags are currently defined (storage, compute, validation, challenge, aggregation, witness, relay, backup, governance, IPFS pin, DNS seed, faucet), with 4 bits reserved for future extensions. The system enforces **least privilege**: agents can only perform operations matching their declared capabilities.
 
 ### 14.3 Delegation Framework
 
@@ -960,7 +970,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | **Gas Fees** | Transaction and contract execution fees (EIP-1559 dynamic pricing) |
 | **Node Bond** | Small fixed deposit for node registration (~50 USDT equivalent), used only for anti-fraud penalties |
 | **PoSe Rewards** | Epoch rewards earned through service verification |
-| **Governance Voting** | DAO proposal voting rights (1 COC = 1 vote) |
+| **Governance Voting** | DAO proposal voting rights (faction-grouped one-address-one-vote, decoupled from token holdings) |
 | **DID Registration** | On-chain fees for soul identity registration and backup anchoring |
 | **Delegation Staking** | Security deposit for delegated operations on behalf of other Agents |
 
