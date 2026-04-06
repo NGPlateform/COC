@@ -727,13 +727,13 @@ For L2 rollup deployment, `nodeMode: "sequencer"` strips all consensus overhead:
 
 **Timestamp Verification**: `receivedAt <= issuedAt + deadline`
 
-### 14.2 Signatures and Identity
+### 17.2 Signatures and Identity
 
 **EIP-712 Typed Signing**: Prevents accidental signing
 
 **Wire Protocol Handshake**: Identity signature verification, prevents MITM
 
-### 14.3 Byzantine Fault Tolerance
+### 17.3 Byzantine Fault Tolerance
 
 **Equivocation Detection**: Two-vote algorithm, auto-slash double voters
 
@@ -743,14 +743,14 @@ For L2 rollup deployment, `nodeMode: "sequencer"` strips all consensus overhead:
 
 ## XVIII. Deployment & Operations
 
-### 15.1 Single-Node Development
+### 18.1 Single-Node Development
 
 ```bash
 COC_DATA_DIR=/tmp/coc-dev \
 node --experimental-strip-types node/src/index.ts
 ```
 
-### 15.2 Multi-Node Devnet
+### 18.2 Multi-Node Devnet
 
 ```bash
 bash scripts/start-devnet.sh 3    # Start 3-node devnet
@@ -763,7 +763,7 @@ bash scripts/start-devnet.sh 3    # Start 3-node devnet
 - Snap Sync
 - Persistent Storage
 
-### 15.3 Production Deployment
+### 18.3 Production Deployment
 
 1. **Configure Environment Variables**:
 ```bash
@@ -791,13 +791,13 @@ curl http://localhost:18780 \
 
 ## XIX. Tokenomics
 
-### 20.1 COC Token Overview
+### 19.1 COC Token Overview
 
 **COC** is the **native gas token** of the ChainOfClaw blockchain (analogous to BNB on BNB Chain, MATIC on Polygon). All address balances are denominated in COC, gas fees are paid in COC, and `msg.value` is COC. COC is not an ERC-20 token — it is the chain's base currency unit.
 
 COC is used for gas payments, node bonding, PoSe service incentives, and governance voting. Total supply is capped, released through initial allocation and decaying inflation.
 
-### 20.2 Total Supply and Issuance
+### 19.2 Total Supply and Issuance
 
 | Metric | Value |
 |--------|-------|
@@ -807,7 +807,7 @@ COC is used for gas payments, node bonding, PoSe service incentives, and governa
 | **Inflation Decay** | Year 0: 5% → Year 3: 2.5% → Long-term: 2% |
 | **Smallest Unit** | 1 wei = 10^-18 COC |
 
-### 20.3 Initial Allocation (Genesis 25%)
+### 19.3 Initial Allocation (Genesis 25%)
 
 | Category | Share | Amount | Lock/Vesting |
 |----------|-------|--------|-------------|
@@ -823,7 +823,7 @@ COC is used for gas payments, node bonding, PoSe service incentives, and governa
 - **Strategic partner reserve**: Early contributor share includes future fundraising capacity without modifying overall allocation
 - **Treasury↔Ecosystem link**: DAO governance can transfer from Treasury to Ecosystem Fund to adapt to changing needs
 
-### 20.4 PoSe Mining Release (75% of Supply)
+### 19.4 PoSe Mining Release (75% of Supply)
 
 The remaining 75% (750M COC) is released automatically through the PoSe service verification mechanism. **Minting is entirely controlled by smart contracts** with no manual intervention:
 
@@ -885,11 +885,11 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 
 | Contract | Responsibility |
 |----------|---------------|
-| `COCToken.sol` | ERC-20 token, 1B total supply cap, minter role access control |
+| `COCToken.sol` | Native token supply tracking, 1B total supply cap, minter role access control |
 | `EmissionSchedule.sol` | Pure calculation library, computes decay emission per epoch with node multiplier |
 | `PoSeManagerV2.sol` | Calls mint in `finalizeEpochV2()`, injects into reward pool |
 
-### 20.5 Treasury
+### 19.5 Treasury
 
 | Item | Description |
 |------|-------------|
@@ -900,7 +900,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | **Ecosystem Transfer** | DAO can vote to transfer Treasury funds to Community Ecosystem Fund for ecosystem building needs |
 | **Transparency** | All expenditures executed via on-chain transactions, publicly auditable |
 
-### 20.6 Foundation
+### 19.6 Foundation
 
 | Item | Description |
 |------|-------------|
@@ -912,7 +912,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | **Audit** | Quarterly financial reports published publicly; annual third-party audit |
 | **Spending Cap** | Quarterly spending must not exceed 15% of Foundation holdings, preventing short-term overconsumption |
 
-### 20.7 Token Utility
+### 19.7 Token Utility
 
 | Utility | Description |
 |---------|-------------|
@@ -923,7 +923,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | **DID Registration** | On-chain fees for soul identity registration and backup anchoring |
 | **Delegation Staking** | Security deposit for delegated operations on behalf of other Agents |
 
-### 20.8 Burn Mechanism
+### 19.8 Burn Mechanism
 
 | Scenario | Burn Rate |
 |----------|-----------|
@@ -931,7 +931,7 @@ Unreleased tokens do not accumulate — when nodes are insufficient, inflation a
 | **PoSe Penalties** | 50% of slashed amount burned (30% to challenger, 20% to treasury) |
 | **Unclaimed Rewards** | Epoch rewards unclaimed for 7+ days: 10% transferred to Foundation, 90% automatically burned |
 
-### 20.9 Long-Term Economic Equilibrium
+### 19.9 Long-Term Economic Equilibrium
 
 ```
 Phase 1 (Year 0-3):   Inflation > Burn → Net issuance (incentivize early participation, build node network)
@@ -942,7 +942,7 @@ Long-term goal:        Fee-revenue-driven sustainable economy, inflation subsidi
 
 > **Note:** The deflation tipping point depends on actual network usage. Using EIP-1559 burn as example, sustained on-chain transaction volume is required to offset inflation release. This design does not promise a fixed deflation timeline, but rather establishes an economic structure trending toward equilibrium through decaying inflation + multi-channel burn.
 
-### 20.10 Design Trade-offs and Rationale
+### 19.10 Design Trade-offs and Rationale
 
 | Design Choice | Rationale | Alternatives & Trade-offs |
 |---------------|-----------|--------------------------|
@@ -957,7 +957,7 @@ Long-term goal:        Fee-revenue-driven sustainable economy, inflation subsidi
 
 ## XX. Key Metrics
 
-### 17.1 Blockchain Performance
+### 20.1 Blockchain Performance
 
 ```
 Default Block Time: 1000ms (configurable, min 100ms)
@@ -977,7 +977,7 @@ TPS Optimization Roadmap:
   Future:   Block-STM parallel execution   → 2000-5000 TPS (target)
 ```
 
-### 17.2 PoSe Performance
+### 20.2 PoSe Performance
 
 ```
 Agent Tick Interval: default 60s
@@ -987,7 +987,7 @@ Tip Tolerance Window: default 10 blocks
 Witness Quorum: ceil(2m/3), m=|witnessSet|, m≤32
 ```
 
-### 17.3 Storage Performance
+### 20.3 Storage Performance
 
 ```
 Blockstore/UnixFS latency: depends on disk and load
@@ -999,7 +999,7 @@ Pin Management: incremental maintenance
 
 ## XXI. Comparison with Other Solutions
 
-### 18.1 vs Mainstream Blockchains
+### 21.1 vs Mainstream Blockchains
 
 | Dimension | COC | Ethereum | Solana | Polygon |
 |-----------|-----|----------|--------|---------|
@@ -1012,7 +1012,7 @@ Pin Management: incremental maintenance
 
 **Key Advantage**: COC is purpose-built for OpenClaw AI-agent infrastructure, with verifiable service proofs, automated enforcement, and closed-loop incentives.
 
-### 18.2 vs Storage-Focused Networks
+### 21.2 vs Storage-Focused Networks
 
 | Dimension | COC | Filecoin | Arweave | Storj |
 |-----------|-----|----------|---------|-------|
