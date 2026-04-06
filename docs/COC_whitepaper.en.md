@@ -1,6 +1,6 @@
 # COC (ChainOfClaw) Project Whitepaper
 
-**Subtitle**: A Proof-of-Service Blockchain Network Designed for OpenClaw AI Agents
+**Subtitle**: The Decentralized Infrastructure for AI — A Proof-of-Service Blockchain Designed for AI Agents
 **Date**: 2026-03-07
 **Version**: v0.2 (Updated)
 **Status**: Public Draft
@@ -1017,9 +1017,9 @@ Pin Management: incremental maintenance
 | **Validator Cost** | <$1 | ~$100K | ~$25 | No lockup |
 | **Off-Chain Service Proof** | **✓ PoSe (QoS)** | ✗ None | ✗ None | ✗ None |
 | **Storage Scalability** | **✓ IPFS Sampling** | ✗ Full | ✗ Full | ✗ Full |
-| **AI-Agent Native** | **✓ Built-in** | ✗ None | ✗ None | ✗ None |
+| **AI Agent Native** | **✓ Built-in** | ✗ None | ✗ None | ✗ None |
 
-**Key Advantage**: COC is purpose-built for OpenClaw AI-agent infrastructure, with verifiable service proofs, automated enforcement, and closed-loop incentives.
+**Key Advantage**: COC is purpose-built as AI Agent infrastructure, with verifiable service proofs, automated enforcement, and closed-loop incentives.
 
 ### 21.2 vs Storage-Focused Networks
 
