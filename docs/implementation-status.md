@@ -10,7 +10,27 @@ This document maps the whitepaper scope to the current codebase and test coverag
 - **Missing**: not implemented
 
 ## 1) Execution Layer (EVM)
-**Status: Partial (Enhanced in Phase 13.1 + 13.2 + 14 + 17 + 26 + M3 + P0-P5 + post-P6 parity hardening)**
+**Status: Partial (Enhanced in Phase 13.1 + 13.2 + 14 + 17 + 26 + M3 + P0-P5 + post-P6 parity hardening + Phase 37 TPS)**
+
+**Phase 37 TPS Optimization** (2026-03-31):
+- Single-node sequencer throughput: 16.7 TPS → **131 TPS** (7.8x improvement)
+- Mega-batch atomic DB writes: ~402 writes/block → **1 atomic write** per block
+- Eliminated redundant transaction parsing (200x ECDSA savings per block)
+- Configuration: blockTimeMs 3000 → 1000, maxTxPerBlock 50 → 256
+- Benchmark results: 200 tx/block in 1.5s, 1000 tx/10 blocks in 131 TPS
+- All 80+ existing tests passing (zero regression)
+
+**Phase 38-39 EVM Pipeline & State Trie Optimization** (2026-04-05):
+- `executeRawTxInBlock()` fast path: skip per-tx VM setup, reuse block-scoped Common/Block objects
+- `BlockExecutionResult`: receipt returned directly from EVM, no Map cache roundtrip
+- ECDSA recovery dedup: mempool accepts pre-decoded Transaction, sender passthrough to EVM
+- Batch `evictCaches()`: per-block instead of per-tx cache eviction
+- State trie `commit()` rewritten: direct `trie.put()` (bypass re-dirty/eviction), skip unchanged storageRoot, read from accountCache
+- Configuration: maxTxPerBlock 256 → 512, account cache 10K → 50K, trie cache 128 → 512, code cache 500 → 2K
+- `pickForBlock` latency: 1.26ms → **0.86ms** (-32%)
+- Infrastructure: `BlockIndex.updateBlockStateRoot()` for future deferred stateRoot
+- 1322 tests passing (zero regression)
+- See `docs/phase-38-39-tps-optimization.md` for full details
 
 Implemented:
 - In-memory EVM execution using `@ethereumjs/vm`
@@ -307,7 +327,7 @@ Implemented:
 - 3/5/7 node devnet scripts
 - End‑to‑end verify script: block production + tx propagation
 - Repository-wide quality gate script for automated testing (`node`, `runtime`, `services`, `tests`, `extensions`, `wallet`, `explorer`, `faucet`, `contracts`)
-- Comprehensive test coverage (`145` test files, `1563` tests across all modules; vendored `node_modules` tests excluded)
+- Comprehensive test coverage (`149` test files, `1588` tests across all modules; vendored `node_modules` tests excluded)
 - Node workspace full suite now exits cleanly after service lifecycle cleanup (`IpfsHttpServer.stop()`, `P2PNode.stop()`), with `864` tests / `124` suites passing via `node --experimental-strip-types --test "src/**/*.test.ts"`
 - Root `tests/` suite now exits cleanly after test-side RPC server cleanup in `tests/rpc-stress.test.ts`, with `173` tests / `34` suites passing via `node --experimental-strip-types --test "tests/**/*.test.ts"`
 - Ancillary workspaces also pass cleanly: `runtime` (`72` tests), `services+nodeops` (`164` tests), `wallet` (`8` tests), `explorer` (`43` tests), `faucet` (`26` tests), `contracts/deploy` (`18` tests), `contracts` Hardhat suite (`171` tests), `extensions` (`24` tests)
@@ -1042,6 +1062,42 @@ Files:
 - `node/src/peer-discovery.ts` (UPDATED - removePeer method)
 - `node/src/phase36.test.ts` (NEW - 6 tests)
 
+## 30) DID (Decentralized Identity for AI Agents)
+**Status: Implemented**
+
+Implemented:
+- **DIDRegistry.sol** smart contract (~600 lines): key rotation, delegation registry, credential anchoring, ephemeral identities, agent lineage tracking
+- **did:coc method resolver**: W3C DID Core v1.0 compliant resolution from on-chain state (SoulRegistry + DIDRegistry)
+- **DID Document builder**: constructs verificationMethod, controller, service, cocAgent metadata from chain data
+- **Key management**: master/operational/delegation/resurrection key hierarchy, key rotation without DID change
+- **Delegation framework**: scope-limited (URI pattern + constraint narrowing), time-bound, depth ≤ 3, cascading revocation, global revocation epoch
+- **Delegation chain verification**: off-chain scope subset checking, parent reference validation, signature verification
+- **Verifiable Credentials**: EIP-712 signed VCs, on-chain hash anchoring, revocation
+- **Selective disclosure**: Merkle tree of credential fields with domain-separated leaf/internal hashing
+- **Capability bitmask**: 16-flag on-chain declaration (storage, compute, validation, challenge, etc.)
+- **DID-based authentication**: challenge-response for Wire and P2P handshake (backward compatible optional fields)
+- **Wire/P2P integration**: HandshakePayload + did/didProof, P2PAuthEnvelope + did/delegationChain
+- **Node config**: didRegistryAddress, didEnabled, didAuthMode (off/optional/required)
+- **Explorer pages**: DID search page + DID detail page with verification methods, controllers, capabilities, lineage
+- **EIP-712 type definitions**: 7 typed data structs matching contract (UpdateDIDDocument, AddVerificationMethod, RevokeVerificationMethod, GrantDelegation, RevokeDelegation, CreateEphemeralIdentity, AnchorCredential)
+- **Deployment script**: deploy-did-registry.ts supporting l2-coc, l1-sepolia, l1-mainnet targets
+- **24 contract tests** (Hardhat): CRUD, key rotation, delegation lifecycle, credentials, ephemeral identities, lineage, access control
+- **79 node-layer tests** (4 files): resolver, document builder, delegation chain, auth, credentials, selective disclosure
+
+Code:
+- `COC/contracts/contracts-src/governance/DIDRegistry.sol`
+- `COC/contracts/test/DIDRegistry.test.cjs`
+- `COC/contracts/deploy/deploy-did-registry.ts`
+- `COC/node/src/crypto/did-registry-types.ts`
+- `COC/node/src/did/did-types.ts`
+- `COC/node/src/did/did-resolver.ts`
+- `COC/node/src/did/did-document-builder.ts`
+- `COC/node/src/did/did-auth.ts`
+- `COC/node/src/did/delegation-chain.ts`
+- `COC/node/src/did/verifiable-credentials.ts`
+- `COC/explorer/src/app/did/page.tsx`
+- `COC/explorer/src/app/did/[id]/page.tsx`
+
 ## 27) Whitepaper Gap Summary
 - Consensus: validator governance with stake-weighted proposer selection (Phase 22 + 26), BFT-lite round state machine with coordinator (Phase 28), GHOST fork choice (Phase 28), BFT integrated into ConsensusEngine main loop (Phase 29, opt-in), equivocation detection for double-vote slashing (Phase 30), consensus metrics tracking (Phase 30), BFT message signature verification (Phase 33).
 - P2P: peer scoring (Phase 16), peer persistence and DNS seed discovery (Phase 26), binary wire protocol and Kademlia DHT (Phase 28), TCP server/client transport and DHT network layer (Phase 29, opt-in), wire FIND_NODE message for DHT queries (Phase 30), dual HTTP+TCP block and tx propagation (Phase 30), DHT node announcement (Phase 30), wire connection manager (Phase 30), wire Block/Tx dedup via BoundedSet (Phase 32), cross-protocol relay Wire→HTTP (Phase 32), BFT dual transport HTTP+TCP (Phase 32), DHT wireClientByPeerId O(1) lookup (Phase 32), per-peer wire port from config (Phase 32), node identity authentication in wire handshake (Phase 33), per-IP connection limit (Phase 33), DHT peer verification (Phase 33), exponential peer ban (Phase 33), signed HTTP gossip auth envelope with phased enforcement (Phase 33). HTTP gossip remains primary.
@@ -1062,8 +1118,9 @@ Files:
 - Reward Pipeline: v1/v2 unified reward manifest with scoring-based distribution; v1 equal-split placeholder fully replaced (M4).
 - NodeOps Runtime: policy hot-reload, conflict detection, action persistence, agent tick integration (M5).
 - Key Management: resolvePrivateKey with env/envFile/config/configFile priority; unified retryAsync with exponential backoff+jitter across all contract calls (M6).
-- Testing: 1563 tests across 145 files covering all major modules including security hardening (Phase 33), Go/No-Go readiness (Phase 34), node ops extension (Phase 35), ops hardening (Phase 36), algorithm safety audit rounds 1-27, M0-M6 milestones, and M7 doc audit gap remediation.
+- Testing: 1588 tests across 149 files covering all major modules including security hardening (Phase 33), Go/No-Go readiness (Phase 34), node ops extension (Phase 35), ops hardening (Phase 36), algorithm safety audit rounds 1-27, M0-M6 milestones, and M7 doc audit gap remediation.
 - Algorithm Safety Audit (Rounds 1-17): BFT commit blockHash binding, snap sync target validation, full state snapshot trie traversal (iterateAccounts/iterateStorage), EIP-1559 baseFee per-block integration, persistent engine timestamp validation, DHT iterative lookup distance sorting, K-bucket ping-evict replacement, configurable signature enforcement (off/monitor/enforce), handshake canonical format alignment, fetchSnapshots discovery dedup, gas histogram O(n), finality O(1) lookup.
 - Algorithm Safety Audit (Rounds 18-27): block normalization field preservation (gasUsed/stateRoot/signature/bftFinalized), state trie evictLru infinite loop guard (dirty entry skip + maxAttempts), P2P aborted chunk guard, MFS mv/cp circular recursion prevention, FrameDecoder exponential buffer growth O(n) amortized, peer-store defensive JSON validation, wire handshake nonce NaN fail-closed, BFT pending buffer height gap cap (≤10), snapshot validateSnapshot account/storage/code size limits (DoS prevention), FindNode response peer object validation, SnapSync fail-closed single-peer trust, validators hash cross-peer consensus, fetchStateSnapshot 30s timeout + 16MiB limit + cache, state-snapshot independent rate limiter, state snapshot export TTL cache.
 - Manual Security Audit: GET auth wiring (fetchStateSnapshot + fetchPeerList attach x-p2p-auth signed header), trySync/tryPropose reentrant lock (syncInFlight/proposeInFlight guards), PeerDiscovery IP diversity quota (MAX_PEERS_PER_IP=3 anti-Sybil), BFT coordinator↔governance runtime sync (updateValidators on finalize + restoreGovernance), chain-snapshot endpoint auth + rate limit.
-- Soul Identity & Recovery (Silicon Immortality): SoulRegistry.sol contract with EIP-712 signed operations, on-chain backup CID anchoring (full+incremental), social recovery (2/3 guardian quorum + 1-day timelock + guardian snapshot + owner cancel), soul deactivation/re-registration. coc-backup OpenClaw extension: IPFS upload with AES-256-GCM encryption, incremental manifest chaining, three-layer integrity verification (manifest Merkle/disk SHA-256/on-chain anchor), path traversal protection, symlink filtering, CID validation, 30s request timeouts. 32 contract tests, 16 extension modules.
+- Soul Identity & Recovery (AI Silicon Immortality): SoulRegistry.sol contract with EIP-712 signed operations, on-chain backup CID anchoring (full+incremental), social recovery (2/3 guardian quorum + 1-day timelock + guardian snapshot + owner cancel), soul deactivation/re-registration. CidRegistry.sol companion contract for bytes32→CID resolution. coc-backup OpenClaw extension: IPFS upload with AES-256-GCM encryption, incremental manifest chaining, three-layer integrity verification (manifest Merkle/disk SHA-256/on-chain anchor), path traversal protection, symlink filtering, CID validation, 30s request timeouts. Three-layer CID resolver (local index → MFS → on-chain). `restoreFromChain()` now fully implemented using CidResolver. Binary database snapshots (SQLite VACUUM INTO, LanceDB tar archives). Execution context snapshots (context-snapshot.ts). OpenClaw lifecycle hooks (session_end, before_compaction, gateway_stop). Automated recovery orchestrator (orchestrator.ts). Carrier daemon with offline monitoring, resurrection flow, and agent spawning. 58 contract tests (SoulRegistry), 47 extension tests across 9 files: binary-handler (6), change-detector (9), cid-resolver (6), lifecycle (3), state-restorer (2), scheduler (1), carrier-daemon (7), resurrection-flow (9), offline-monitor (4). 9 agent tools (soul-backup, soul-restore, soul-status, soul-doctor, soul-resurrection, soul-auto-restore, soul-guardian-initiate, soul-guardian-approve, soul-carrier-request). Guardian CLI (initiate/approve/status). Carrier CLI (register/submit-request/list). Carrier daemon with AbortController shutdown, addRequest() returning AddRequestResult, multi-process single-key role model (owner/guardian/carrier as separate EOAs).
+- DID (Decentralized Identity for AI Agents): DIDRegistry.sol contract with EIP-712 signed key rotation, scope-limited delegation registry (depth ≤ 3, cascading revocation, global epoch), verifiable credential anchoring, ephemeral sub-identities, agent lineage tracking. did:coc method resolver (W3C DID Core v1.0), DID Document builder, delegation chain verification with scope subset checking, selective disclosure via Merkle tree. Wire/P2P backward-compatible DID auth extensions. Explorer DID pages. 24 contract tests, 79 node-layer tests.

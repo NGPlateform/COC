@@ -17,6 +17,7 @@ import { hexToBytes } from "@ethereumjs/util"
 import type { NodeSigner, SignatureVerifier } from "./crypto/signer.ts"
 import { calculateBaseFee, calculateExcessBlobGas, genesisBaseFee, BLOCK_GAS_LIMIT } from "./base-fee.ts"
 import { LevelDatabase } from "./storage/db.ts"
+import type { BatchOp } from "./storage/db.ts"
 import { BlockIndex } from "./storage/block-index.ts"
 import type { TxWithReceipt, IndexedLog, LogFilter } from "./storage/block-index.ts"
 import { PersistentNonceStore } from "./storage/nonce-store.ts"
@@ -259,8 +260,12 @@ export class PersistentChainEngine {
     if (this.nodeSigner) {
       block.signature = this.nodeSigner.sign(`block:${block.hash}`) as Hex
     }
+    // Build sender map from mempool picks to avoid redundant ECDSA in block execution
+    const senderByRawTx = new Map<string, string>()
+    for (const mt of txs) senderByRawTx.set(mt.rawTx, mt.from)
+
     try {
-      await this.applyBlock(block, true)
+      await this.applyBlock(block, true, senderByRawTx)
     } catch (err) {
       log.warn("block application failed, falling back to empty block", { height: nextHeight.toString(), txCount: txs.length, error: String(err) })
       for (const tx of txs) {
@@ -276,7 +281,7 @@ export class PersistentChainEngine {
     return block
   }
 
-  async applyBlock(block: ChainBlock, locallyProposed = false): Promise<void> {
+  async applyBlock(block: ChainBlock, locallyProposed = false, senderByRawTx?: Map<string, string>): Promise<void> {
     // Re-entrant guard (async EVM execution can yield back to event loop)
     if (this.applyingBlock) {
       throw new Error("applyBlock re-entrant call detected")
@@ -370,35 +375,41 @@ export class PersistentChainEngine {
     const confirmedNonces: string[] = []
     let storedBlock: ChainBlock
     const executionTimestamp = BigInt(Math.floor(block.timestampMs / 1000))
+    // Accumulate all DB ops in memory; written as single atomic batch after execution
+    const allDbOps: BatchOp[] = []
+    const executedTxHashes: Hex[] = []
 
     try {
-    await this.evm.applyBlockContext({
+    const blockContext: import("./evm.ts").ExecutionContext = {
       blockNumber: block.number,
       baseFeePerGas: block.baseFee ?? 0n,
       excessBlobGas: block.excessBlobGas,
       parentBeaconBlockRoot: block.parentBeaconBlockRoot ? hexToBytes(block.parentBeaconBlockRoot) : undefined,
       timestamp: executionTimestamp,
-    })
+    }
+    await this.evm.applyBlockContext(blockContext)
+
+    // Pre-compute block-scoped objects once — reuse for all txs in this block
+    const blockEnv = this.evm.prepareBlock(block.number, blockContext)
+    const { blockCommon, executionBlock } = blockEnv._internal as { blockCommon: any; executionBlock: any }
+    const baseFee = block.baseFee ?? 0n
+    const blockNumberHex = `0x${block.number.toString(16)}`
 
     for (let i = 0; i < block.txs.length; i++) {
       const raw = block.txs[i]
-      const result = await this.evm.executeRawTx(raw, block.number, i, block.hash, block.baseFee ?? 0n, {
-        excessBlobGas: block.excessBlobGas,
-        parentBeaconBlockRoot: block.parentBeaconBlockRoot ? hexToBytes(block.parentBeaconBlockRoot) : undefined,
-        timestamp: executionTimestamp,
-      })
-      const receipt = this.evm.getReceipt(result.txHash)
+      const sender = senderByRawTx?.get(raw)
+      const result = await this.evm.executeRawTxInBlock(raw, blockCommon, executionBlock, block.number, i, block.hash, baseFee, blockNumberHex, sender)
 
-      // Extract from/to from the raw transaction
-      const txInfo = this.evm.getTransaction(result.txHash)
-      const txFrom = (txInfo?.from ?? "0x0") as Hex
-      const txTo = (txInfo?.to ?? null) as Hex | null
+      // Use directly returned receipt/from/to — no Map lookup needed
+      const receipt = result.receipt
+      const txFrom = (result.from ?? "0x0") as Hex
+      const txTo = (result.to ?? null) as Hex | null
 
-      if (receipt) {
+      {
         const receiptLogs = Array.isArray(receipt.logs) ? receipt.logs : []
 
-        // Store transaction with receipt
-        await this.blockIndex.putTransaction(result.txHash as Hex, {
+        // Collect transaction ops (deferred — not written yet)
+        const txOps = this.blockIndex.buildTransactionOps(result.txHash as Hex, {
           rawTx: raw,
           receipt: {
             transactionHash: receipt.transactionHash as Hex,
@@ -415,6 +426,7 @@ export class PersistentChainEngine {
             })),
           },
         })
+        for (let j = 0; j < txOps.length; j++) allDbOps.push(txOps[j])
 
         // Collect indexed logs
         for (let logIdx = 0; logIdx < receiptLogs.length; logIdx++) {
@@ -431,17 +443,18 @@ export class PersistentChainEngine {
           })
         }
 
-        // Register contract if this is a contract creation tx
-        if (!txTo && receipt.contractAddress) {
-          await this.blockIndex.registerContract(
-            receipt.contractAddress as Hex,
+        // Collect contract registration ops (deferred)
+        if (!txTo && result.contractAddress) {
+          const ctOps = this.blockIndex.buildContractOps(
+            result.contractAddress as Hex,
             block.number,
             result.txHash as Hex,
             txFrom,
           )
+          for (let j = 0; j < ctOps.length; j++) allDbOps.push(ctOps[j])
         }
 
-        totalGasUsed += BigInt(receipt.gasUsed.toString())
+        totalGasUsed += result.gasUsed
 
         // Incremental gas limit check — fail fast before more side effects
         if (totalGasUsed > BLOCK_GAS_LIMIT) {
@@ -454,8 +467,9 @@ export class PersistentChainEngine {
           gasUsed: String(receipt.gasUsed ?? "0x5208"),
         })
 
-        // Collect nonce marks — applied after all checks pass
+        // Collect nonce marks and tx hashes for mempool removal
         confirmedNonces.push(`tx:${result.txHash}`)
+        executedTxHashes.push(result.txHash as Hex)
       }
     }
 
@@ -509,14 +523,17 @@ export class PersistentChainEngine {
       ...(block.parentBeaconBlockRoot ? { parentBeaconBlockRoot: block.parentBeaconBlockRoot } : {}),
     }
 
-    // Store block and logs
-    await this.blockIndex.putBlock(storedBlock)
-    await this.blockIndex.putLogs(block.number, blockLogs)
+    // Append block, log, and nonce ops — then flush everything in a single atomic batch
+    const blockOps = this.blockIndex.buildBlockOps(storedBlock)
+    const logOps = this.blockIndex.buildLogOps(block.number, blockLogs)
+    const nonceOps = this.txNonceStore.buildMarkUsedOps(confirmedNonces)
+    for (let j = 0; j < blockOps.length; j++) allDbOps.push(blockOps[j])
+    for (let j = 0; j < logOps.length; j++) allDbOps.push(logOps[j])
+    for (let j = 0; j < nonceOps.length; j++) allDbOps.push(nonceOps[j])
+    await this.db.batch(allDbOps)
 
-    // Mark confirmed transactions only after block is persisted
-    for (const nonce of confirmedNonces) {
-      await this.txNonceStore.markUsed(nonce)
-    }
+    // Batch evict receipt/tx caches once per block instead of per-tx
+    this.evm.evictCaches()
 
     } catch (err) {
       // Revert state trie on any failure to prevent state pollution
@@ -529,14 +546,9 @@ export class PersistentChainEngine {
     // Update finality flags for recent blocks
     await this.updateFinalityFlags()
 
-    // Remove confirmed transactions from mempool
-    for (const raw of block.txs) {
-      try {
-        const parsed = Transaction.from(raw)
-        this.mempool.remove(parsed.hash as Hex)
-      } catch (err) {
-        log.warn("failed to parse tx for mempool removal", { error: String(err) })
-      }
+    // Remove confirmed transactions from mempool (reuse hashes from execution phase)
+    for (const hash of executedTxHashes) {
+      this.mempool.remove(hash)
     }
 
     // Emit events for subscribers (use storedBlock with computed fields)
