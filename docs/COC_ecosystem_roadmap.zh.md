@@ -29,7 +29,7 @@ COC 诞生于 AI Agent 爆发式增长的拐点上：
 
 ### 1.2 阶段目标 (基于 AI Agent 行业增长曲线校准)
 
-OpenClaw 是 COC 的参考 Agent 实现（目前为规划状态），COC 协议本身欢迎任何兼容 DID 的 Agent 框架接入。考虑到 Agent 是软件实例（指数增长），而节点是物理基础设施（线性增长），两者的目标曲线不同：
+OpenClaw 是 COC 优先支持的参考 Agent 实现，已接入当前 COC 网络并作为重要存储服务提供节点运行；COC 协议本身欢迎任何兼容 DID 的 Agent 框架接入。考虑到 Agent 是软件实例（指数增长），而节点是物理基础设施（线性增长），两者的目标曲线不同：
 
 | 时期 | 阶段定位 | 节点目标 | Agent 目标 | 经济指标 |
 |------|---------|---------|-----------|---------|
@@ -77,11 +77,11 @@ COC Agent 注册目标 (假设捕获 1-2% 全球 Agent):
 > - 🔵 **主网运行**: 已部署到主网
 > - ⚪ **参考实现规划中**: 规范明确但代码未启动
 >
-> 当前 (本路线图发布时) 状态: COCToken / EmissionSchedule / FoundationVesting / Treasury / PoSeManagerV2 / DIDRegistry / SoulRegistry / CidRegistry 合约 + chain-engine / EVM / P2P / RPC / IPFS / 三大基础服务核心代码均为 **🟢 代码已实现 + 🟡 测试网运行**；OpenClaw 参考 Agent 为 **⚪ 参考实现规划中**。
+> 当前 (本路线图发布时) 状态: COCToken / EmissionSchedule / FoundationVesting / Treasury / PoSeManagerV2 / DIDRegistry / SoulRegistry / CidRegistry 合约 + chain-engine / EVM / P2P / RPC / IPFS / 三大基础服务核心代码均为 **🟢 代码已实现 + 🟡 测试网运行**；OpenClaw 参考 Agent 为 **🟢 代码已实现 + 🟡 已接入当前 COC 网络**（作为重要存储服务提供节点运行）。
 
 ### 阶段 1: 创世启动期 (Q1-Q2 2026)
 
-**目标**: 将已实现的代码与测试网经验切换到主网；启动 OpenClaw 参考实现
+**目标**: 将已实现的代码与测试网经验切换到主网；推进 OpenClaw 参考 Agent 的主网迁移与功能扩展
 
 | 里程碑 | 交付物 | 入场状态 → 阶段 1 结束状态 | 负责方 |
 |--------|--------|--------------------------|--------|
@@ -89,7 +89,7 @@ COC Agent 注册目标 (假设捕获 1-2% 全球 Agent):
 | **PoSe v2 主网启用** | 服务挖矿 + 自动铸币 + 奖励领取 | 🟡 测试网 → 🔵 主网运行 | 核心团队 |
 | **DID 主网注册启用** | DIDRegistry + 能力位掩码 + 委托链 | 🟡 测试网 → 🔵 主网运行 | 核心团队 |
 | **AI 硅基永生主网 v1** | SoulRegistry + Carrier 注册 + 备份恢复 | 🟡 测试网 → 🔵 主网运行 | 核心团队 |
-| **OpenClaw 参考实现 v0.1** | 首个 did:coc 兼容 Agent (从规划进入开发) | ⚪ 规划 → 🟢 代码已实现 | 核心团队 |
+| **OpenClaw 参考 Agent 主网迁移** | 已接入测试网的 OpenClaw 切换到主网，扩展存储/计算能力 | 🟡 已接入当前网络 → 🔵 主网运行 | 核心团队 |
 | **创世节点招募** | 100+ 早期节点运营者 | — | 社区 + 基金会 |
 
 **KPI**: 主网稳定运行 30 天 + 100+ 活跃节点 + 100K+ 链上交易 + 1K+ Agent 注册

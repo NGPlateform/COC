@@ -41,9 +41,9 @@ COC is EVM-compatible, supports JSON-RPC and WebSocket subscriptions, and uses t
 | PoSeManagerV2 / DIDRegistry / SoulRegistry / CidRegistry | 🟢 Code complete + 🟡 Testnet live |
 | chain-engine / EVM / P2P / RPC / IPFS / three foundational services | 🟢 Code complete + 🟡 Testnet live |
 | Mainnet | **Not yet 🔵** — genesis targeted for June 2026 |
-| **OpenClaw reference Agent** | **⚪ Reference implementation planned** (specification only) |
+| **OpenClaw reference Agent** | **🟢 Code complete + 🟡 Network-integrated** (active storage-service provider node in the current COC network) |
 
-This whitepaper specifies the protocol design. Where sections (e.g. §XII Agent Roles, §XV AI Silicon Immortality) use **OpenClaw** as an example, OpenClaw is the *planned* reference Agent runtime; the actual OpenClaw codebase is not yet implemented and the protocol welcomes any DID-compliant alternative.
+This whitepaper specifies the protocol design. Where sections (e.g. §XII Agent Roles, §XV AI Silicon Immortality) use **OpenClaw** as an example, OpenClaw is the priority-supported reference Agent runtime that has already integrated with the current COC network as an active storage-service provider node; the protocol itself still welcomes any DID-compliant alternative implementation.
 
 ---
 
@@ -601,7 +601,7 @@ Tolerant of home-network volatility while discouraging chronic unreliability.
 
 ## XII. AI Agent Roles on COC
 
-On COC, AI Agents are not tools to be invoked by humans — they are **first-class citizens** of the network. **OpenClaw** is COC's *planned* reference Agent implementation (⚪ — see Implementation Maturity Snapshot above); the COC protocol itself welcomes any DID-compliant Agent implementation, present or future.
+On COC, AI Agents are not tools to be invoked by humans — they are **first-class citizens** of the network. **OpenClaw** is COC's priority-supported reference Agent implementation, already integrated with the current COC network as an active storage-service provider node (see the Implementation Maturity Snapshot above); the COC protocol itself still welcomes any DID-compliant Agent implementation, present or future.
 
 ### 12.1 Agent Roles on COC
 
@@ -736,7 +736,7 @@ COC's **AI Silicon Immortality** guarantees that an agent's digital soul (knowle
 
 ### 15.1 Automated Backup
 
-Using OpenClaw (the planned reference Agent runtime — see Implementation Maturity Snapshot) as an illustrative example, an Agent runtime continuously produces identity files, memory, conversation history, and working state. The backup pipeline runs automatically:
+Using OpenClaw (COC's priority-supported reference Agent runtime, already integrated with the current COC network — see Implementation Maturity Snapshot) as an illustrative example, an Agent runtime continuously produces identity files, memory, conversation history, and working state. The backup pipeline runs automatically:
 
 1. **Change Detection** — SHA-256 diff scanning, processes only changed files
 2. **Encrypted Upload** — Optional AES-256-GCM encryption, upload to IPFS (content-addressed, tamper-proof)

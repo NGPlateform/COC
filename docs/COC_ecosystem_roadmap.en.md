@@ -29,7 +29,7 @@ COC launches at the inflection point of AI Agent explosive growth:
 
 ### 1.2 Phase Goals (Calibrated to AI Agent Industry Growth Curve)
 
-OpenClaw is COC's reference Agent implementation (currently in planning); the COC protocol welcomes any DID-compliant Agent framework. Note that Agents are software instances (exponential growth), while nodes are physical infrastructure (linear growth) — their target curves differ:
+OpenClaw is the priority-supported reference Agent implementation for COC; it has already integrated with the current COC network and operates as an active storage-service provider node. The COC protocol itself welcomes any DID-compliant Agent framework. Note that Agents are software instances (exponential growth), while nodes are physical infrastructure (linear growth) — their target curves differ:
 
 | Period | Phase Position | Node Target | Agent Target | Economic Indicators |
 |--------|---------------|-------------|--------------|---------------------|
@@ -77,11 +77,11 @@ Capturing 1-2% of global Agents may seem aggressive, but is justified by:
 > - 🔵 **Mainnet live**: Deployed on mainnet
 > - ⚪ **Reference implementation planned**: Specification clear; code not yet started
 >
-> Current status (at this roadmap's publication): COCToken / EmissionSchedule / FoundationVesting / Treasury / PoSeManagerV2 / DIDRegistry / SoulRegistry / CidRegistry contracts + chain-engine / EVM / P2P / RPC / IPFS / three foundational services core code are all **🟢 Code complete + 🟡 Testnet live**; the OpenClaw reference Agent is **⚪ Reference implementation planned**.
+> Current status (at this roadmap's publication): COCToken / EmissionSchedule / FoundationVesting / Treasury / PoSeManagerV2 / DIDRegistry / SoulRegistry / CidRegistry contracts + chain-engine / EVM / P2P / RPC / IPFS / three foundational services core code are all **🟢 Code complete + 🟡 Testnet live**; the OpenClaw reference Agent is **🟢 Code complete + 🟡 Network-integrated** (active storage-service provider node in the current COC network).
 
 ### Phase 1: Genesis Launch (Q1-Q2 2026)
 
-**Goal**: Migrate the implemented code and testnet experience to mainnet; start the OpenClaw reference implementation
+**Goal**: Migrate the implemented code and testnet experience to mainnet; advance the OpenClaw reference Agent's mainnet migration and capability expansion
 
 | Milestone | Deliverable | Entry → Exit Status | Owner |
 |-----------|-------------|---------------------|-------|
@@ -89,7 +89,7 @@ Capturing 1-2% of global Agents may seem aggressive, but is justified by:
 | **PoSe v2 Mainnet** | Service mining + auto minting + reward claims | 🟡 Testnet → 🔵 Mainnet live | Core team |
 | **DID Mainnet Registration** | DIDRegistry + capability bitmask + delegation chain | 🟡 Testnet → 🔵 Mainnet live | Core team |
 | **AI Silicon Immortality Mainnet v1** | SoulRegistry + Carrier registration + backup/recovery | 🟡 Testnet → 🔵 Mainnet live | Core team |
-| **OpenClaw Reference v0.1** | First did:coc-compatible Agent (planning → development) | ⚪ Planned → 🟢 Code complete | Core team |
+| **OpenClaw Reference Agent Mainnet Migration** | Migrate testnet-integrated OpenClaw to mainnet; expand storage/compute capabilities | 🟡 Network-integrated → 🔵 Mainnet live | Core team |
 | **Genesis Node Recruitment** | 100+ early node operators | — | Community + Foundation |
 
 **KPI**: 30 days stable mainnet + 100+ active nodes + 100K+ on-chain transactions + 1K+ Agent registrations
