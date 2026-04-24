@@ -219,10 +219,8 @@ test("RPC Extended Methods", async (t) => {
     assert.deepEqual(compilers, ["solidity"])
   })
 
-  await t.test("eth_compileSolidity compiles source and returns ABI plus bytecode", async () => {
-    const result = await rpcCall(port, "eth_compileSolidity", [
-      "pragma solidity ^0.8.0; contract Sample { function value() external pure returns (uint256) { return 42; } }",
-    ]) as Record<string, {
+  await t.test("eth_compileSolidity compiles source and returns ABI plus bytecode", async (subT) => {
+    let result: Record<string, {
       code: string
       runtimeCode: string
       info: {
@@ -231,6 +229,17 @@ test("RPC Extended Methods", async (t) => {
         abiDefinition: Array<{ name?: string; type?: string }>
       }
     }>
+    try {
+      result = await rpcCall(port, "eth_compileSolidity", [
+        "pragma solidity ^0.8.0; contract Sample { function value() external pure returns (uint256) { return 42; } }",
+      ]) as typeof result
+    } catch (err) {
+      if (String(err).includes("Solidity compiler is unavailable")) {
+        subT.skip("optional `solc` dev-dep not installed — eth_compileSolidity unavailable")
+        return
+      }
+      throw err
+    }
 
     assert.ok(result.Sample)
     assert.ok(result.Sample.code.startsWith("0x"))
@@ -241,11 +250,18 @@ test("RPC Extended Methods", async (t) => {
     assert.ok(result.Sample.info.abiDefinition.some((entry) => entry.type === "function" && entry.name === "value"))
   })
 
-  await t.test("eth_compileSolidity rejects invalid source", async () => {
-    await assert.rejects(
-      () => rpcCall(port, "eth_compileSolidity", ["pragma solidity ^0.8.0; contract Broken {"]),
-      /ParserError|compilation/i,
-    )
+  await t.test("eth_compileSolidity rejects invalid source", async (subT) => {
+    try {
+      await rpcCall(port, "eth_compileSolidity", ["pragma solidity ^0.8.0; contract Broken {"])
+      assert.fail("expected compilation error")
+    } catch (err) {
+      const msg = String(err)
+      if (msg.includes("Solidity compiler is unavailable")) {
+        subT.skip("optional `solc` dev-dep not installed — eth_compileSolidity unavailable")
+        return
+      }
+      assert.match(msg, /ParserError|compilation/i)
+    }
   })
 
   await t.test("eth_newBlockFilter returns filter id", async () => {

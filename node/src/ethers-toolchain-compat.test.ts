@@ -22,8 +22,18 @@ contract Counter {
 }
 `
 
-async function compileCounter(): Promise<{ abi: any[]; bytecode: string }> {
-  const module = await import("solc")
+// Returns null when the optional `solc` dev-dep isn't installed — caller
+// should t.skip() on null rather than fail. Mirrors rpc-debug-compatibility's
+// pattern; keeps the suite green on machines without solc (the runtime RPC
+// `eth_compileSolidity` already surfaces its own "unavailable" error there).
+async function compileCounter(): Promise<{ abi: any[]; bytecode: string } | null> {
+  let module: any
+  try {
+    module = await import("solc")
+  } catch (err) {
+    if ((err as { code?: string }).code === "ERR_MODULE_NOT_FOUND") return null
+    throw err
+  }
   const solc = (module.default ?? module) as { compile(input: string): string }
   const input = {
     language: "Solidity",
@@ -58,7 +68,14 @@ async function compileCounter(): Promise<{ abi: any[]; bytecode: string }> {
   }
 }
 
-test("ethers provider deploys and traces contracts without custom patches", async () => {
+test("ethers provider deploys and traces contracts without custom patches", async (t) => {
+  // Skip before allocating any resources — bail early if solc dev-dep missing.
+  const artifact = await compileCounter()
+  if (!artifact) {
+    t.skip("optional `solc` package not installed — skip contract-deploy compat check")
+    return
+  }
+
   const previousDebugEnv = process.env.COC_DEBUG_RPC
   process.env.COC_DEBUG_RPC = "1"
 
@@ -101,7 +118,6 @@ test("ethers provider deploys and traces contracts without custom patches", asyn
   const signer = new Wallet(FUNDED_PK, provider)
 
   try {
-    const artifact = await compileCounter()
     const factory = new ContractFactory(artifact.abi, artifact.bytecode, signer)
     const contract = await factory.deploy()
     await engine.proposeNextBlock()

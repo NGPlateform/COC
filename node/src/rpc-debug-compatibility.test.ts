@@ -73,8 +73,20 @@ type NestedCallArtifacts = {
   caller: CompiledContractArtifact
 }
 
-let nestedCallArtifactsPromise: Promise<NestedCallArtifacts> | null = null
-let counterArtifactPromise: Promise<CompiledContractArtifact> | null = null
+// Compile results resolve to null when optional `solc` dev-dep isn't
+// installed — each test that needs them should t.skip() on null.
+let nestedCallArtifactsPromise: Promise<NestedCallArtifacts | null> | null = null
+let counterArtifactPromise: Promise<CompiledContractArtifact | null> | null = null
+
+async function loadSolc(): Promise<{ compile(input: string): string } | null> {
+  try {
+    const module = await import("solc")
+    return (module.default ?? module) as { compile(input: string): string }
+  } catch (err) {
+    if ((err as { code?: string }).code === "ERR_MODULE_NOT_FOUND") return null
+    throw err
+  }
+}
 
 async function deployStorageContract(engine: PersistentChainEngine): Promise<{ contractAddress: string; deployTxHash: Hex }> {
   const wallet = new Wallet(FUNDED_PK)
@@ -121,101 +133,89 @@ async function buildStorageContractCallTx(contractAddress: string, nonce: number
   }) as Hex
 }
 
-async function compileNestedCallArtifacts(): Promise<NestedCallArtifacts> {
+// Resolves to null when the optional `solc` dev-dep isn't installed.
+// Callers should t.skip() on null rather than assert on the happy path.
+async function compileNestedCallArtifacts(): Promise<NestedCallArtifacts | null> {
   if (!nestedCallArtifactsPromise) {
-    nestedCallArtifactsPromise = import("solc")
-      .then((module) => {
-        const solc = (module.default ?? module) as { compile(input: string): string }
-        const input = {
-          language: "Solidity",
-          sources: {
-            "nested.sol": { content: NESTED_CALL_SOURCE },
+    nestedCallArtifactsPromise = (async (): Promise<NestedCallArtifacts | null> => {
+      const solc = await loadSolc()
+      if (!solc) return null
+      const input = {
+        language: "Solidity",
+        sources: { "nested.sol": { content: NESTED_CALL_SOURCE } },
+        settings: {
+          outputSelection: {
+            "*": { "*": ["abi", "evm.bytecode.object", "evm.deployedBytecode.object"] },
           },
-          settings: {
-            outputSelection: {
-              "*": {
-                "*": ["abi", "evm.bytecode.object", "evm.deployedBytecode.object"],
-              },
-            },
-          },
-        }
-        const output = JSON.parse(solc.compile(JSON.stringify(input))) as {
-          contracts?: Record<string, Record<string, {
-            abi?: any[]
-            evm?: {
-              bytecode?: { object?: string }
-              deployedBytecode?: { object?: string }
-            }
-          }>>
-          errors?: Array<{ severity?: string; formattedMessage?: string; message?: string }>
-        }
-        const fatalErrors = (output.errors ?? []).filter((entry) => entry.severity === "error")
-        if (fatalErrors.length > 0) {
-          throw new Error(fatalErrors.map((entry) => entry.formattedMessage ?? entry.message ?? "solc error").join("\n"))
-        }
-        const contracts = output.contracts?.["nested.sol"]
-        if (!contracts?.Callee || !contracts?.Caller) {
-          throw new Error("nested call artifacts missing")
-        }
-        const toArtifact = (artifact: {
+        },
+      }
+      const output = JSON.parse(solc.compile(JSON.stringify(input))) as {
+        contracts?: Record<string, Record<string, {
           abi?: any[]
           evm?: { bytecode?: { object?: string }; deployedBytecode?: { object?: string } }
-        }): CompiledContractArtifact => ({
-          abi: artifact.abi ?? [],
-          bytecode: normalizeCompiledHex(artifact.evm?.bytecode?.object),
-          runtimeCode: normalizeCompiledHex(artifact.evm?.deployedBytecode?.object),
-        })
-        return {
-          callee: toArtifact(contracts.Callee),
-          caller: toArtifact(contracts.Caller),
-        }
+        }>>
+        errors?: Array<{ severity?: string; formattedMessage?: string; message?: string }>
+      }
+      const fatalErrors = (output.errors ?? []).filter((entry) => entry.severity === "error")
+      if (fatalErrors.length > 0) {
+        throw new Error(fatalErrors.map((entry) => entry.formattedMessage ?? entry.message ?? "solc error").join("\n"))
+      }
+      const contracts = output.contracts?.["nested.sol"]
+      if (!contracts?.Callee || !contracts?.Caller) {
+        throw new Error("nested call artifacts missing")
+      }
+      const toArtifact = (artifact: {
+        abi?: any[]
+        evm?: { bytecode?: { object?: string }; deployedBytecode?: { object?: string } }
+      }): CompiledContractArtifact => ({
+        abi: artifact.abi ?? [],
+        bytecode: normalizeCompiledHex(artifact.evm?.bytecode?.object),
+        runtimeCode: normalizeCompiledHex(artifact.evm?.deployedBytecode?.object),
       })
+      return {
+        callee: toArtifact(contracts.Callee),
+        caller: toArtifact(contracts.Caller),
+      }
+    })()
   }
   return nestedCallArtifactsPromise
 }
 
-async function compileCounterArtifact(): Promise<CompiledContractArtifact> {
+async function compileCounterArtifact(): Promise<CompiledContractArtifact | null> {
   if (!counterArtifactPromise) {
-    counterArtifactPromise = import("solc")
-      .then((module) => {
-        const solc = (module.default ?? module) as { compile(input: string): string }
-        const input = {
-          language: "Solidity",
-          sources: {
-            "Counter.sol": { content: COUNTER_SOURCE },
+    counterArtifactPromise = (async (): Promise<CompiledContractArtifact | null> => {
+      const solc = await loadSolc()
+      if (!solc) return null
+      const input = {
+        language: "Solidity",
+        sources: { "Counter.sol": { content: COUNTER_SOURCE } },
+        settings: {
+          outputSelection: {
+            "*": { "*": ["abi", "evm.bytecode.object", "evm.deployedBytecode.object"] },
           },
-          settings: {
-            outputSelection: {
-              "*": {
-                "*": ["abi", "evm.bytecode.object", "evm.deployedBytecode.object"],
-              },
-            },
-          },
-        }
-        const output = JSON.parse(solc.compile(JSON.stringify(input))) as {
-          contracts?: Record<string, Record<string, {
-            abi?: any[]
-            evm?: {
-              bytecode?: { object?: string }
-              deployedBytecode?: { object?: string }
-            }
-          }>>
-          errors?: Array<{ severity?: string; formattedMessage?: string; message?: string }>
-        }
-        const fatalErrors = (output.errors ?? []).filter((entry) => entry.severity === "error")
-        if (fatalErrors.length > 0) {
-          throw new Error(fatalErrors.map((entry) => entry.formattedMessage ?? entry.message ?? "solc error").join("\n"))
-        }
-        const artifact = output.contracts?.["Counter.sol"]?.Counter
-        if (!artifact) {
-          throw new Error("counter artifact missing")
-        }
-        return {
-          abi: artifact.abi ?? [],
-          bytecode: normalizeCompiledHex(artifact.evm?.bytecode?.object),
-          runtimeCode: normalizeCompiledHex(artifact.evm?.deployedBytecode?.object),
-        }
-      })
+        },
+      }
+      const output = JSON.parse(solc.compile(JSON.stringify(input))) as {
+        contracts?: Record<string, Record<string, {
+          abi?: any[]
+          evm?: { bytecode?: { object?: string }; deployedBytecode?: { object?: string } }
+        }>>
+        errors?: Array<{ severity?: string; formattedMessage?: string; message?: string }>
+      }
+      const fatalErrors = (output.errors ?? []).filter((entry) => entry.severity === "error")
+      if (fatalErrors.length > 0) {
+        throw new Error(fatalErrors.map((entry) => entry.formattedMessage ?? entry.message ?? "solc error").join("\n"))
+      }
+      const artifact = output.contracts?.["Counter.sol"]?.Counter
+      if (!artifact) {
+        throw new Error("counter artifact missing")
+      }
+      return {
+        abi: artifact.abi ?? [],
+        bytecode: normalizeCompiledHex(artifact.evm?.bytecode?.object),
+        runtimeCode: normalizeCompiledHex(artifact.evm?.deployedBytecode?.object),
+      }
+    })()
   }
   return counterArtifactPromise
 }
@@ -520,9 +520,13 @@ describe("RPC debug compatibility", () => {
     assert.equal(blockTraces[0].result.output, `0x${"0".repeat(62)}2a`)
   })
 
-  it("debug_traceCall and trace_call use finalized/safe historical state instead of latest", async () => {
-    const harness = await createHistoricalTraceHarness()
+  it("debug_traceCall and trace_call use finalized/safe historical state instead of latest", async (t) => {
     const artifact = await compileCounterArtifact()
+    if (!artifact) {
+      t.skip("optional `solc` dev-dep not installed — skip compile-dependent trace test")
+      return
+    }
+    const harness = await createHistoricalTraceHarness()
     const counterInterface = new Interface(artifact.abi)
     const valueData = counterInterface.encodeFunctionData("value")
     const set7Data = counterInterface.encodeFunctionData("set", [7n]) as Hex
@@ -793,9 +797,13 @@ describe("RPC debug compatibility", () => {
     assert.equal(secondPage[0].action.to.toLowerCase(), contractAddress.toLowerCase())
   })
 
-  it("finalized block tags resolve consistently across trace block/replay/filter RPCs", async () => {
-    const harness = await createHistoricalTraceHarness()
+  it("finalized block tags resolve consistently across trace block/replay/filter RPCs", async (t) => {
     const artifact = await compileCounterArtifact()
+    if (!artifact) {
+      t.skip("optional `solc` dev-dep not installed — skip compile-dependent trace test")
+      return
+    }
+    const harness = await createHistoricalTraceHarness()
     const counterInterface = new Interface(artifact.abi)
     const set7Data = counterInterface.encodeFunctionData("set", [7n]) as Hex
     const set9Data = counterInterface.encodeFunctionData("set", [9n]) as Hex
@@ -1099,8 +1107,12 @@ describe("RPC debug compatibility", () => {
     assert.equal(blockTrace[0].result?.output, `0x${"0".repeat(62)}2a`)
   })
 
-  it("callTracer and vmTrace capture nested calls", async () => {
+  it("callTracer and vmTrace capture nested calls", async (t) => {
     const artifacts = await compileNestedCallArtifacts()
+    if (!artifacts) {
+      t.skip("optional `solc` dev-dep not installed — skip nested-call trace test")
+      return
+    }
     const { contractAddress: calleeAddress } = await deployContract(engine, artifacts.callee.bytecode as Hex, 0)
     const { contractAddress: callerAddress } = await deployContract(engine, artifacts.caller.bytecode as Hex, 1)
     const callerInterface = new Interface(artifacts.caller.abi)
@@ -1197,8 +1209,12 @@ describe("RPC debug compatibility", () => {
     assert.ok(nestedVmOp?.sub?.ops.some((step) => step.op === "RETURN"))
   })
 
-  it("callTracer exposes revertReason for nested reverts", async () => {
+  it("callTracer exposes revertReason for nested reverts", async (t) => {
     const artifacts = await compileNestedCallArtifacts()
+    if (!artifacts) {
+      t.skip("optional `solc` dev-dep not installed — skip nested-revert trace test")
+      return
+    }
     const { contractAddress: calleeAddress } = await deployContract(engine, artifacts.callee.bytecode as Hex, 0)
     const { contractAddress: callerAddress } = await deployContract(engine, artifacts.caller.bytecode as Hex, 1)
     const callerInterface = new Interface(artifacts.caller.abi)
@@ -1232,8 +1248,12 @@ describe("RPC debug compatibility", () => {
     assert.equal(revertedTrace.calls?.[0].revertReason, "nested nope")
   })
 
-  it("callTracer exposes custom error selectors for nested reverts", async () => {
+  it("callTracer exposes custom error selectors for nested reverts", async (t) => {
     const artifacts = await compileNestedCallArtifacts()
+    if (!artifacts) {
+      t.skip("optional `solc` dev-dep not installed — skip custom-selector trace test")
+      return
+    }
     const { contractAddress: calleeAddress } = await deployContract(engine, artifacts.callee.bytecode as Hex, 0)
     const { contractAddress: callerAddress } = await deployContract(engine, artifacts.caller.bytecode as Hex, 1)
     const callerInterface = new Interface(artifacts.caller.abi)
