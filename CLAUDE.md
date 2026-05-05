@@ -8,17 +8,30 @@ COC (ChainOfClaw) is an EVM-compatible blockchain prototype integrating a PoSe (
 
 ## Workspace Structure
 
-The project uses npm workspaces to manage multiple packages:
+`package.json` declares npm workspaces for: `node`, `contracts`, `services`, `runtime`, `wallet`, `tests`, `explorer`, `website`. Several other top-level dirs are part of the repo but **not** npm workspaces — they have their own `package.json` and are run/installed independently.
 
+Workspaces:
 - `node/`: Blockchain core engine (ChainEngine, EVM, P2P, RPC, IPFS)
-- `contracts/`: Solidity smart contracts (PoSeManager settlement contract)
-- `services/`: PoSe off-chain services (challenger, verifier, aggregator, relayer)
-- `runtime/`: Runtime executables (coc-node, coc-agent, coc-relayer)
-- `nodeops/`: Node operations and policy engine
+- `contracts/`: Solidity smart contracts. Sources live under `contracts/contracts-src/` (Hardhat `paths.sources` is overridden to this path), grouped by `settlement/`, `governance/`, `rollup/`, `token/`, and `test-contracts/`
+- `services/`: PoSe off-chain services (challenger, verifier, aggregator, relayer, common)
+- `runtime/`: Runtime executables (coc-node, coc-agent, coc-relayer) + `runtime/lib/` utilities
 - `wallet/`: CLI wallet tool
 - `tests/`: Integration and end-to-end tests
-- `explorer/`: Next.js blockchain explorer
-- `website/`: Project website
+- `explorer/`: Next.js 15 blockchain explorer (port 3000)
+- `website/`: Project website (Next.js, port 3001)
+
+Non-workspace packages:
+- `nodeops/`: Node operations and policy engine — installed separately, tests run with the services bucket
+- `faucet/`: Testnet faucet (server + drip + UI tests)
+- `ipfs-demo/`: Standalone Next.js demo app for the IPFS interface
+
+Other top-level dirs:
+- `scripts/`: Devnet bring-up, stress, deploy, audit, and verification scripts (`start-devnet.sh`, `state-divergence-audit.ts`, `tps-bench.ts`, ...)
+- `specs/`: Protocol/economics/roadmap specifications (`pose-protocol.md`, `economics.md`, `rollup-interfaces.md`, `implementation-roadmap.md`)
+- `docs/`: Bilingual documentation (see Documentation Reference below)
+- `docker/`: Dockerfiles per service + `docker-compose.{yml,monitoring,testnet}.yml` + grafana/nginx/prometheus/systemd/testnet configs
+- `ops/`: Alerts, runbooks, testnet ops material
+- `configs/`: Per-network config (`prowl-testnet`)
 
 > **Note:** The previous `extensions/coc-nodeops/` and `extensions/coc-backup/`
 > folders have been migrated to the standalone
@@ -44,14 +57,18 @@ npm start  # uses node --experimental-strip-types
 ```bash
 cd contracts
 npm install
-npm run compile          # Compile contracts
-npm test                 # Hardhat tests
-npm run coverage         # Coverage check
-npm run coverage:check   # Verify coverage thresholds
-npm run deploy:local     # Deploy to local network
-npm run deploy:governance:coc   # Deploy governance contracts to the default COC network alias
-# Contract verification is exposed through explorer /verify,
-# not a Hardhat verify:pose script
+npm run compile                 # Compile contracts (sources in contracts-src/)
+npm test                        # Hardhat tests
+npm run coverage                # Coverage report
+npm run coverage:check          # Coverage + threshold check
+npm run deploy:pose:coc         # Deploy PoSe stack to COC network alias (default deploy path)
+npm run deploy:local            # Alias of deploy:pose:coc
+npm run deploy:governance:coc   # Deploy governance contracts (Soul/DID/Cid/Treasury/etc.) to COC alias
+npm run deploy:governance:local # Same, but against the local hardhat network
+# Network endpoint is read from COC_RPC_URL/PROWL_RPC_URL + COC_CHAIN_ID/PROWL_CHAIN_ID;
+# deployer key from DEPLOYER_PRIVATE_KEY. See contracts/hardhat.config.cjs.
+# Contract source verification is exposed through explorer /verify,
+# not a Hardhat verify:pose script.
 ```
 
 ### Run Devnet
@@ -82,20 +99,19 @@ Policy files are located at `nodeops/policies/*.yaml` and can be loaded and eval
 
 ## Test Strategy
 
-Uses Node.js built-in test framework and Hardhat test runner (`1682` tests across `155` test files, excluding vendored `node_modules` tests):
-- **Node layer tests**: `node/src/*.test.ts node/src/**/*.test.ts` (`899` tests, `75` files) - chain engine, EVM, RPC, WebSocket, P2P, mempool, storage, IPFS, PoSe, BFT consensus, DHT, wire protocol, fork choice, state snapshot, wire server, DHT network, snap sync, consensus-BFT integration, consensus metrics, wire connection manager, wire tx relay, sync progress, gas histogram, governance stats, wire dedup/relay, security hardening, P2P auth, wire auth handshake, replay guard, nonce registry, PoSe auth, Prometheus metrics, BFT slashing, Phase 36 ops hardening, algorithm safety audit round 3, P2P benchmarks, wire priority frames, stateRoot verification, speculative execution, coc_getEquivocations, ethers toolchain compatibility, viem toolchain compatibility, fee oracle, RPC data accuracy, block format standardization
-- **Services + NodeOps tests**: `services/**/*.test.ts` + `nodeops/*.test.ts` (`164` tests, `25` files) - PoSe v2 services, reward tree, scoring determinism, challenger rewards, policy DSL, policy hot reload
-- **Runtime tests**: `runtime/lib/*.test.ts` + `runtime/coc-relayer.test.ts` (`72` tests, `16` files) - pending retention, runtime metrics, agent metrics server, reward manifest, pose-v2 fault proof, relayer dispute recovery, BFT slash bridge
-- **Tests workspace**: `tests/**/*.test.ts` (`178` tests, `14` files) - integration, e2e, stress, chaos, governance scripts, infra validation, v1 reward scoring, contract lifecycle
-- **Wallet tests**: `wallet/coc-wallet.test.ts` (`8` tests, `1` file) - wallet CLI, keystore, import/export, formatting
-- **Explorer tests**: `explorer/src/lib/*.test.ts` (`43` tests, `3` files) - ABI decoding, provider helpers, Solidity compiler version resolution
-- **Faucet tests**: `faucet/src/*.test.ts` (`26` tests, `3` files) - drip flow, web UI, server wiring, cooldown logic
-- **Contract deploy tests**: `contracts/deploy/*.test.ts` (`18` tests, `2` files) - deploy config resolution, CLI wrapper, PoSe deploy helper validation
-- **Contract tests**: `cd contracts && npm test` (`227` tests, `10` files) - PoSeManager v1, PoSeManagerV2, v2 E2E lifecycle, gas benchmarks, security audit, EIP-712 cross-check, SoulRegistry (identity, backup, recovery, guardians), DIDRegistry (key rotation, delegation, credentials, ephemeral identities, lineage)
-- **claw-mem tests** (extension replacement, now in its own repo):
-  [`github.com/NGPlateform/claw-mem`](https://github.com/NGPlateform/claw-mem)
-  — 208 tests (node/backup/recovery/carrier lifecycles); `npm test` inside that repo.
-- **Storage layer tests**: `node/src/storage/*.test.ts` (included in node layer)
+Two runners are used: Node.js built-in test framework (`node --test`) for everything except Solidity, and Hardhat for contracts. Counts below are file counts as of the latest check; test totals drift continuously, so verify by running the bucket if you need an exact number.
+
+Buckets (file counts):
+- **Node layer** — `node/src/**/*.test.ts` (~95 files): chain engine, EVM, RPC, WebSocket, P2P, mempool, storage, IPFS, PoSe, BFT, DHT, wire protocol, fork choice, snap sync, equivocation, security hardening, fee oracle, hardfork/cancun compat, ethers/viem toolchain compat, P2P benchmarks, DID resolver/auth/credentials, etc. Includes `storage/`, `did/`, `benchmarks/`, `crypto/`, `diagnostics/` subtrees
+- **Runtime** — `runtime/lib/**/*.test.ts` + `runtime/coc-relayer.test.ts` (~27 files): pending retention, runtime/agent metrics, witness collector, reward manifest, pose-v2 fault proof, relayer dispute recovery, BFT slash bridge
+- **Services + NodeOps** — `services/**/*.test.ts` + `nodeops/*.test.ts` (~26 files): PoSe v2 services, reward tree, scoring determinism, challenger rewards, policy DSL, policy hot reload
+- **Tests workspace** — `tests/**/*.test.ts` (~16 files): integration, e2e, stress, chaos, governance scripts, infra validation, v1 reward scoring, contract lifecycle
+- **Wallet** — `wallet/coc-wallet.test.ts` (1 file): wallet CLI, keystore, import/export, formatting
+- **Explorer** — `explorer/src/lib/*.test.ts` (3 files): ABI decoding, provider helpers, solc version resolution
+- **Faucet** — `faucet/src/*.test.ts` (3 files): drip flow, web UI, server wiring, cooldown logic
+- **Contract deploy** — `contracts/deploy/*.test.ts` (2 files): deploy config resolution, CLI wrapper, PoSe deploy helper validation
+- **Contracts (Hardhat)** — `cd contracts && npm test` (~17 files in `contracts/test/`): PoSeManager v1/v2, v2 E2E lifecycle, gas benchmarks, security audit, EIP-712 cross-check, SoulRegistry, DIDRegistry, governance contracts
+- **claw-mem** (former `extensions/coc-nodeops` + `extensions/coc-backup`): now lives in its own repo at [`github.com/NGPlateform/claw-mem`](https://github.com/NGPlateform/claw-mem); run `npm test` inside that repo
 
 Running tests:
 ```bash
@@ -220,15 +236,21 @@ cd contracts && npm test
 - `src/lib/abi-decoder.ts`: 4-byte method selector + event topic decoder (M7)
 - `src/lib/solc-verify.ts`: Solc-js source verification service (M7)
 
-### Smart Contracts (contracts/)
-- `settlement/PoSeManager.sol`: PoSe v1 settlement contract (node registration, batch submission, epoch finalization, slashing)
-- `settlement/PoSeManagerV2.sol`: PoSe v2 settlement contract (permissionless fault proofs, commit-reveal+bond, Merkle-claimable rewards, witness quorum, empty epoch finalization, EIP-712 signatures)
-- `settlement/PoSeTypesV2.sol`: v2 data structures (EvidenceLeafV2, FaultProof, ChallengeRecord, RewardClaim)
-- `settlement/IPoSeManagerV2.sol`: v2 interface and events
-- `settlement/MerkleProofLite.sol`: Merkle proof verification (calldata + memory variants)
-- `governance/SoulRegistry.sol`: Soul identity registration, backup CID anchoring, EIP-712 signed operations, social recovery with 2/3 guardian quorum
-- `governance/DIDRegistry.sol`: DID management for AI agents — key rotation, delegation registry (depth≤3, scope-limited, time-bound), ephemeral identities, agent lineage tracking, verifiable credential anchoring, EIP-712 signed operations
-- `governance/CidRegistry.sol`: Permissionless IPFS CID registry — maps keccak256(CID) to original CID string for backup recovery, immutable entries, batch registration support
+### Smart Contracts (contracts/contracts-src/)
+Hardhat is configured with `paths.sources = "./contracts-src"`. Layout:
+
+- `settlement/`: PoSe settlement
+  - `PoSeManager.sol` (+ `PoSeManagerStorage.sol`, `PoSeTypes.sol`, `IPoSeManager.sol`): v1 — node registration, batch submission, epoch finalization, slashing
+  - `PoSeManagerV2.sol` (+ `PoSeTypesV2.sol`, `IPoSeManagerV2.sol`): v2 — permissionless fault proofs, commit-reveal+bond, Merkle-claimable rewards, witness quorum, empty-epoch finalization, EIP-712 signatures
+  - `MerkleProofLite.sol`: Merkle proof verification (calldata + memory variants)
+- `governance/`:
+  - `SoulRegistry.sol`: identity registration, backup CID anchoring, social recovery with 2/3 guardian quorum, EIP-712
+  - `DIDRegistry.sol`: AI-agent DID — key rotation, delegation (depth≤3, scope-limited, time-bound), ephemeral identities, agent lineage, VC anchoring, EIP-712
+  - `CidRegistry.sol`: permissionless IPFS CID registry mapping `keccak256(CID) → string`
+  - `ValidatorRegistry.sol`, `EquivocationDetector.sol`, `FactionRegistry.sol`, `GovernanceDAO.sol`, `Treasury.sol`, `InsuranceFund.sol`: validator set & DAO machinery
+- `rollup/`: `RollupStateManager.sol` (+ `IRollupStateManager.sol`, `RollupTypes.sol`), `DelayedInbox.sol` (+ `IDelayedInbox.sol`)
+- `token/`: `COCToken.sol`, `EmissionSchedule.sol`, `FoundationVesting.sol`
+- `test-contracts/`: Solidity helpers used only from Hardhat tests
 
 ### DID Module (node/src/did/)
 - `did-types.ts`: W3C DID Core types, delegation scope/credential types, capability bitmask flags
