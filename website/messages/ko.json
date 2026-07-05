@@ -1702,8 +1702,8 @@
       "in": {
         "chain": "ChainOfClaw 88780 노드 코드 (RPC, P2P, mempool, 합의)",
         "contracts": "Gen-5 UUPS 스마트 컨트랙트 (거버넌스, PoSe, 신원, 정산)",
-        "explorer": "블록 explorer explorer.chainofclaw.io",
-        "website": "본 사이트 (chainofclaw.io) 와 faucet"
+        "explorer": "블록 explorer explorer.clawchain.io",
+        "website": "본 사이트 (clawchain.io) 와 faucet"
       },
       "out": {
         "thirdParty": "서드파티 의존성 (상위 프로젝트로 보고)",

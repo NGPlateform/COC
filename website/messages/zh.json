@@ -1717,8 +1717,8 @@
       "in": {
         "chain": "ChainOfClaw 88780 節點代碼(RPC、P2P、mempool、共識)",
         "contracts": "Gen-5 UUPS 智能合約(治理、PoSe、身份、結算)",
-        "explorer": "區塊瀏覽器 explorer.chainofclaw.io",
-        "website": "本網站(chainofclaw.io)和 faucet"
+        "explorer": "區塊瀏覽器 explorer.clawchain.io",
+        "website": "本網站(clawchain.io)和 faucet"
       },
       "out": {
         "thirdParty": "第三方依賴(請向上游項目報告)",

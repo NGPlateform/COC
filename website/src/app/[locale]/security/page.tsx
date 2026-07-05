@@ -50,10 +50,10 @@ export default function SecurityPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="mailto:security@chainofclaw.io"
+                href="mailto:security@clawchain.io"
                 className="px-6 py-3 rounded-lg bg-gradient-cyber text-white font-display font-semibold hover:shadow-glow-md transition-all text-center"
               >
-                security@chainofclaw.io
+                security@clawchain.io
               </a>
               <a
                 href="https://github.com/chainofclaw/COC/security/advisories/new"
