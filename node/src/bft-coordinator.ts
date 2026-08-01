@@ -7,6 +7,7 @@
 
 import { BftRound, EquivocationDetector } from "./bft.ts"
 import type { BftMessage, BftRoundConfig, EquivocationEvidence } from "./bft.ts"
+import { BftVoteLedger } from "./bft-vote-ledger.ts"
 import type { ChainBlock, Hex } from "./blockchain-types.ts"
 import type { NodeSigner, SignatureVerifier } from "./crypto/signer.ts"
 import { createLogger } from "./logger.ts"
@@ -31,6 +32,15 @@ export interface BftCoordinatorConfig {
   signer?: NodeSigner
   /** Signature verifier for validating BFT messages */
   verifier?: SignatureVerifier
+  /**
+   * Path to the durable BFT vote ledger (fsync'd `(height → blockHash)` record
+   * of our own prepare/commit votes). When set, a mid-round restart cannot
+   * re-sign a conflicting vote for an unfinalized height → no self-equivocation
+   * on restart. Omit (or leave undefined) to run the ledger in-memory only
+   * (legacy behavior — used by tests). Node wires this to
+   * `join(config.dataDir, "bft-vote-ledger.json")`.
+   */
+  voteLedgerPath?: string
   /**
    * Speculatively execute `block` against the node's current state and return
    * the post-execution stateRoot. Called before emitting our prepare vote so
@@ -176,9 +186,20 @@ export class BftCoordinator {
   // to a freshly-built block (which Phase R correctly refuses, but then
   // the chain stalls because no one re-sends the original).
   private localPreparedBlock = new Map<bigint, ChainBlock>()
+  // Durable, fsync'd mirror of localPreparedAt/localCommittedAt so a mid-round
+  // restart does not re-sign a conflicting vote for an unfinalized height
+  // (which peers flag as equivocation → BFT deadlock). See bft-vote-ledger.ts.
+  private readonly voteLedger: BftVoteLedger
 
   constructor(cfg: BftCoordinatorConfig) {
     this.cfg = cfg
+    // Rehydrate our prior prepare/commit commitments from disk. On a clean
+    // start the ledger is empty; after a mid-round restart it carries the
+    // heights we already voted on, so the Phase R self-equivocation guards
+    // (localPreparedAt/localCommittedAt) survive the restart.
+    this.voteLedger = new BftVoteLedger(cfg.voteLedgerPath ?? null)
+    this.localPreparedAt = this.voteLedger.snapshotPrepared()
+    this.localCommittedAt = this.voteLedger.snapshotCommitted()
     // Liveness watchdog: if no block finalizes for LIVENESS_TIMEOUT_MS while
     // we have an active round, the BFT state is likely deadlocked at a phase
     // mismatch (observed 2026-04-26: node-1 timed out in commit, node-3 in
@@ -320,18 +341,22 @@ export class BftCoordinator {
     // Handle the propose phase
     const outgoing = this.activeRound.handlePropose(block, block.proposer, localStateRoot)
 
-    // Sign and broadcast prepare votes
-    for (const msg of outgoing) {
-      this.signMessage(msg)
-      await this.cfg.broadcastMessage(msg)
-    }
-
-    // Phase R: record what we voted prepare on so a future startRound at
-    // the same height with a different block can refuse self-equivocation.
+    // Phase R + durable ledger: record what we are about to prepare BEFORE
+    // broadcasting (write-ahead). Persisting the commitment first (fsync)
+    // means a crash any time after the vote hits the wire still remembers it
+    // on restart, so we never re-prepare a different block at this height —
+    // the self-equivocation that used to deadlock BFT after a restart.
     if (outgoing.length > 0) {
       this.localPreparedAt.set(block.number, block.hash)
       // Phase R3: stash the full block too so re-broadcast can replay it.
       this.localPreparedBlock.set(block.number, block)
+      this.voteLedger.recordPrepared(block.number, block.hash)
+    }
+
+    // Sign and broadcast prepare votes
+    for (const msg of outgoing) {
+      this.signMessage(msg)
+      await this.cfg.broadcastMessage(msg)
     }
 
     // Set timeout
@@ -494,12 +519,13 @@ export class BftCoordinator {
               })
               continue
             }
+            // Write-ahead: persist the commit commitment (fsync) BEFORE
+            // broadcasting, so a restart cannot re-commit a different block.
+            this.localCommittedAt.set(out.height, out.blockHash)
+            this.voteLedger.recordCommitted(out.height, out.blockHash)
           }
           this.signMessage(out)
           await this.cfg.broadcastMessage(out)
-          if (out.type === "commit") {
-            this.localCommittedAt.set(out.height, out.blockHash)
-          }
         }
         // Start commit retry when transitioning to commit phase
         if (this.activeRound?.state.phase === "commit") {
@@ -648,6 +674,7 @@ export class BftCoordinator {
     this.localPreparedAt.clear()
     this.localCommittedAt.clear()
     this.localPreparedBlock.clear()
+    this.voteLedger.clearAll()
     // Pending messages may carry senderIds that are no longer validators;
     // drop them so handleMessage doesn't reject them one-by-one (and so
     // a removed peer's stale prepare can't influence quorum after they're out).
@@ -1285,6 +1312,7 @@ export class BftCoordinator {
     for (const h of this.localPreparedBlock.keys()) {
       if (h <= finalizedHeight) this.localPreparedBlock.delete(h)
     }
+    this.voteLedger.prune(finalizedHeight)
   }
 
   /**
