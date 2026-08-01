@@ -586,6 +586,10 @@ if (bftEnabled) {
     signer: nodeSigner,
     verifier: nodeSigner,
     relaxedQuorum,
+    // Durable BFT vote ledger — fsync'd record of our prepare/commit votes so
+    // a mid-round restart cannot re-sign a conflicting vote (self-equivocation
+    // that used to deadlock consensus). See bft-vote-ledger.ts.
+    voteLedgerPath: join(config.dataDir, "bft-vote-ledger.json"),
     // Issue #73: gate startRound + processDeferredBlock against stale
     // proposals (height ≤ chain tip). `lastFinalizedHeight` alone misses
     // gossip-block catch-up after a restart; this closes the gap.
