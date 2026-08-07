@@ -58,6 +58,13 @@ const FETCH_SNAPSHOTS_TIMEOUT_MS = 30_000
 // + a tolerance for trySnapSync's per-peer fan-out so a normal slow sync
 // completes naturally; only genuinely-stuck syncs trip the watchdog.
 const SYNC_INFLIGHT_WATCHDOG_MS = 90_000
+// After a restart, wait this long before replaying unfinalized BFT votes so
+// peers have had a moment to (re)connect and will actually receive the replay.
+// Without it, a height that was partly voted but not finalized at crash time
+// can deadlock BFT permanently (88780, 2026-08-05). Env-overridable for tests.
+const BFT_VOTE_REPLAY_STARTUP_DELAY_MS = Number(
+  process.env.COC_BFT_VOTE_REPLAY_DELAY_MS ?? 8_000,
+)
 
 // Phase H15: how long without a BFT-finalized block before the fallback
 // proposer fires the no-progress override. Primary fallback (+1 in rotation)
@@ -475,6 +482,15 @@ export class ConsensusEngine {
       if (this.bft) {
         this.noProgressWatchdogTimer = setInterval(() => { void this.checkNoProgressWatchdog() }, NO_PROGRESS_STAGGER_MS)
         this.noProgressWatchdogTimer.unref()
+        // Restart liveness (2026-08-05): the durable vote-ledger makes a
+        // restarted validator REFUSE to re-vote a conflicting block (safety),
+        // but nothing re-broadcasts the votes it already cast for a still-
+        // unfinalized height — so peers one vote short of quorum deadlock.
+        // Replay those exact votes once, after a short grace for peers to
+        // connect. Idempotent: replaying the same (height, blockHash) never
+        // equivocates (canonical msg carries no round).
+        const replayTimer = setTimeout(() => { void this.bft!.replayUnfinalizedVotes() }, BFT_VOTE_REPLAY_STARTUP_DELAY_MS)
+        replayTimer.unref?.()
       }
       void this.trySync()
     }

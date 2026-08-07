@@ -1115,6 +1115,66 @@ export class BftCoordinator {
     msg.signature = this.cfg.signer.sign(canonical) as Hex
   }
 
+  /**
+   * Liveness recovery after a restart. The durable vote-ledger rehydrates
+   * localPreparedAt / localCommittedAt (constructor) so we REFUSE to re-vote a
+   * different block for a height we already voted on — that preserves safety
+   * (no self-equivocation). But nothing re-broadcasts those votes: a height
+   * that was partly voted but NOT finalized when we crashed then stays silent
+   * forever. Peers waiting on OUR commit to reach quorum never receive it, and
+   * we refuse to prepare a fresh candidate — a permanent deadlock that a plain
+   * atomic restart cannot break (88780, 2026-08-05: v4/v1 had committed block A
+   * but on restart never re-broadcast it, so v5 sat one commit short forever).
+   *
+   * The fix is to REPLAY the exact votes we already persisted. Replaying an
+   * identical (height, blockHash) is idempotent and never triggers
+   * equivocation: the canonical signed message carries no round, and peers'
+   * EquivocationDetector only flags a DIFFERENT blockHash for the same
+   * (height, phase). We only replay heights still above the staleness floor
+   * (i.e. unfinalized) — finalized heights are already pruned / on-chain.
+   *
+   * Commits are replayed before prepares: a commit implies we already
+   * prepared, and it is the commit that unblocks peers stuck one vote short of
+   * commit quorum. Prepares are replayed only for heights we prepared but did
+   * NOT commit. Safe to call once on startup (after peers have had a moment to
+   * connect); a no-op when the ledger holds nothing unfinalized.
+   */
+  async replayUnfinalizedVotes(): Promise<{ prepares: number; commits: number }> {
+    const floor = await this.computeStalenessFloor()
+    let commits = 0
+    let prepares = 0
+
+    for (const [height, blockHash] of this.localCommittedAt) {
+      if (height <= floor) continue
+      const msg: BftMessage = { type: "commit", height, blockHash, senderId: this.cfg.localId, signature: "" as Hex }
+      this.signMessage(msg)
+      try {
+        await this.cfg.broadcastMessage(msg)
+        commits++
+      } catch (err) {
+        log.warn("replayUnfinalizedVotes: commit broadcast failed", { height: height.toString(), error: String(err) })
+      }
+    }
+
+    for (const [height, blockHash] of this.localPreparedAt) {
+      if (height <= floor) continue
+      if (this.localCommittedAt.has(height)) continue // a commit already supersedes this prepare
+      const msg: BftMessage = { type: "prepare", height, blockHash, senderId: this.cfg.localId, signature: "" as Hex }
+      this.signMessage(msg)
+      try {
+        await this.cfg.broadcastMessage(msg)
+        prepares++
+      } catch (err) {
+        log.warn("replayUnfinalizedVotes: prepare broadcast failed", { height: height.toString(), error: String(err) })
+      }
+    }
+
+    if (commits > 0 || prepares > 0) {
+      log.info("BFT replayed unfinalized votes after restart", { commits, prepares, floor: floor.toString() })
+    }
+    return { commits, prepares }
+  }
+
   private async processDeferredBlock(): Promise<void> {
     const block = this.deferredBlock
     this.deferredBlock = null
