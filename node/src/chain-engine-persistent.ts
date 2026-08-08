@@ -2043,14 +2043,23 @@ export class PersistentChainEngine {
       return prevWeight === undefined
     }
 
-    if (!this.governance) {
-      return blockWeight === BigInt(block.number)
-    }
-
+    // cumulativeWeight is bound into block.hash (verified just above in
+    // verifyBlockChain) and only needs to be strictly monotonically increasing
+    // for fork-choice. Do NOT assume `=== block.number`: that holds only for
+    // UNWEIGHTED chains and wrongly rejects a real stake-weighted snapshot
+    // (weight = parentWeight + proposerStake) whenever this node's governance
+    // instance isn't loaded yet — exactly a fresh restart after a leveldb wipe
+    // (88780, 2026-08-05: the wiped node could NEVER re-adopt via snap-sync;
+    // every historical stake-weighted block failed this check → localHeight
+    // stuck at 1, infinite retry). An unweighted chain's weight (== number) is
+    // also strictly increasing, so monotonicity accepts both chain modes and
+    // does not depend on the (restart-unreliable) governance instance. Exact
+    // per-block stake correctness stays enforced on the applyBlock path
+    // (cumulativeWeightValidationError) and by the post-import stateRoot quorum;
+    // snap-sync only needs monotonicity + per-block hash integrity.
     if (prevWeight === undefined) {
       return blockWeight > 0n
     }
-
     return blockWeight > prevWeight
   }
 }
