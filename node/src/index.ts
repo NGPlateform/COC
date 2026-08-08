@@ -304,7 +304,7 @@ const p2p = new P2PNode(
       // Persistent engine: return recent blocks only (cap to prevent DoS).
       // NOTE: nodes that fall behind by more than this window cannot block-sync;
       // consensus.trySync() detects the gap and falls back to SnapSync when enabled.
-      const MAX_SNAPSHOT_BLOCKS = 1000
+      const MAX_SNAPSHOT_BLOCKS = Number(process.env.COC_MAX_SNAPSHOT_BLOCKS ?? 1000)
       const height = await chain.getHeight()
       if (height === 0n) return { blocks: [], updatedAtMs: Date.now() }
       const startBlock = height > BigInt(MAX_SNAPSHOT_BLOCKS) ? height - BigInt(MAX_SNAPSHOT_BLOCKS) + 1n : 1n

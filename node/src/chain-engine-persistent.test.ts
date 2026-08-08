@@ -605,7 +605,7 @@ test("PersistentChainEngine: rejects block with forged cumulativeWeight", async 
   }
 })
 
-test("PersistentChainEngine: importSnapSyncBlocks rejects forged cumulativeWeight", async () => {
+test("PersistentChainEngine: importSnapSyncBlocks rejects non-monotonic cumulativeWeight", async () => {
   const tmpDir = mkdtempSync(join(tmpdir(), "coc-engine-test-"))
 
   try {
@@ -624,22 +624,61 @@ test("PersistentChainEngine: importSnapSyncBlocks rejects forged cumulativeWeigh
     )
     await engine.init()
 
-    const payload = {
-      number: 1n,
-      parentHash: zeroHash(),
-      proposer: "node1",
-      timestampMs: 1,
-      txs: [] as string[],
-      cumulativeWeight: 999n,
-    }
-    const snapshotBlock: ChainBlock = {
-      ...payload,
-      hash: hashBlockPayload(payload),
-      finalized: false,
+    // Two blocks whose cumulativeWeight is NOT strictly increasing (block 2's
+    // weight is not > block 1's). Snap-sync requires monotonic weight for
+    // fork-choice, so this must be rejected even though each block's hash is
+    // self-consistent. (Exact per-block stake correctness — e.g. weight must
+    // equal parentWeight+stake — is enforced on the applyBlock path, not here:
+    // snap-sync cannot recompute historical stake before governance loads.)
+    const b1p = { number: 1n, parentHash: zeroHash(), proposer: "node1", timestampMs: 1, txs: [] as string[], cumulativeWeight: 100n }
+    const b1: ChainBlock = { ...b1p, hash: hashBlockPayload(b1p), finalized: false }
+    const b2p = { number: 2n, parentHash: b1.hash, proposer: "node1", timestampMs: 2, txs: [] as string[], cumulativeWeight: 100n }
+    const b2: ChainBlock = { ...b2p, hash: hashBlockPayload(b2p), finalized: false }
+
+    const imported = await engine.importSnapSyncBlocks([b1, b2])
+    assert.strictEqual(imported, false)
+
+    await engine.close()
+  } finally {
+    rmSync(tmpDir, { recursive: true, force: true })
+  }
+})
+
+test("PersistentChainEngine: importSnapSyncBlocks adopts a stake-weighted window far above genesis (88780 2026-08-05 regression)", async () => {
+  // A wiped node (localHeight=1, only genesis) receives the [tip-N .. tip]
+  // snapshot window of a long, stake-weighted chain. The window starts far
+  // above genesis, and each block's cumulativeWeight is stake-accumulated
+  // (32e18 per block) — NOT == block.number. Pre-fix, hasValidSnapshotWeight
+  // assumed `weight === number` whenever governance wasn't loaded (which is the
+  // case on a fresh restart) and rejected every historical block, so the wiped
+  // node could NEVER re-adopt the chain via snap-sync (localHeight stuck at 1,
+  // infinite retry). This is the 2026-08-05 88780 deadlock. Post-fix, snap-sync
+  // only requires monotonic weight + per-block hash integrity, so the real
+  // stake-weighted window imports.
+  const tmpDir = mkdtempSync(join(tmpdir(), "coc-engine-test-"))
+  try {
+    const evm = await EvmChain.create(2077)
+    const engine = new PersistentChainEngine(
+      { dataDir: tmpDir, nodeId: "node1", chainId: 2077, validators: [], finalityDepth: 3, maxTxPerBlock: 100, minGasPriceWei: 1n },
+      evm,
+    )
+    await engine.init()
+
+    const STAKE = 32000000000000000000n // 32e18, realistic validator stake
+    const blocks: ChainBlock[] = []
+    let parentHash = ("0x" + "99".repeat(32)) as Hex // parent of #100 — NOT in local (only genesis is)
+    let ts = 1000
+    for (let n = 100n; n <= 105n; n++) {
+      const payload = { number: n, parentHash, proposer: "node1", timestampMs: ts, txs: [] as string[], cumulativeWeight: n * STAKE }
+      const block: ChainBlock = { ...payload, hash: hashBlockPayload(payload), finalized: false }
+      blocks.push(block)
+      parentHash = block.hash
+      ts += 1
     }
 
-    const imported = await engine.importSnapSyncBlocks([snapshotBlock])
-    assert.strictEqual(imported, false)
+    const imported = await engine.importSnapSyncBlocks(blocks)
+    assert.strictEqual(imported, true, "stake-weighted window far above genesis should adopt")
+    assert.strictEqual(await engine.getHeight(), 105n, "localHeight should advance to the window tip")
 
     await engine.close()
   } finally {
