@@ -1,6 +1,10 @@
 import { describe, it } from "node:test"
 import assert from "node:assert/strict"
+import { mkdtempSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
 import { BftCoordinator } from "./bft-coordinator.ts"
+import { BftVoteLedger } from "./bft-vote-ledger.ts"
 import type { BftMessage } from "./bft.ts"
 import type { ChainBlock, Hex } from "./blockchain-types.ts"
 
@@ -920,5 +924,103 @@ describe("BftCoordinator", () => {
     await new Promise<void>((resolve) => setTimeout(resolve, 120))
 
     assert.equal(stuckCalls.length, 0, "proposer with at least 1 peer prepare is NOT stuck")
+  })
+})
+
+describe("BftCoordinator.replayUnfinalizedVotes (restart liveness, 2026-08-05)", () => {
+  const mkPath = () => join(mkdtempSync(join(tmpdir(), "bft-replay-")), "vote-ledger.json")
+  const HASH_A = ("0x" + "aa".repeat(32)) as Hex
+  const HASH_B = ("0x" + "bb".repeat(32)) as Hex
+  const HASH_C = ("0x" + "cc".repeat(32)) as Hex
+
+  it("re-broadcasts a committed vote after a simulated restart (the 88780 deadlock)", async () => {
+    const path = mkPath()
+    // Before the crash: we prepared AND committed block A at height 100, but it
+    // was never finalized (peers were one commit short — exactly v4/v1 on 08-05).
+    const pre = new BftVoteLedger(path)
+    pre.recordPrepared(100n, HASH_A)
+    pre.recordCommitted(100n, HASH_A)
+
+    // Restart: a fresh coordinator rehydrates from the same ledger path.
+    const sent: BftMessage[] = []
+    const coord = new BftCoordinator({
+      localId: "v1",
+      validators,
+      voteLedgerPath: path,
+      getChainHeight: () => 99n, // chain tip below 100 → height 100 still unfinalized
+      broadcastMessage: async (m) => { sent.push(m) },
+      onFinalized: async () => {},
+    })
+
+    const res = await coord.replayUnfinalizedVotes()
+    assert.equal(res.commits, 1, "one commit replayed")
+    assert.equal(res.prepares, 0, "commit supersedes the prepare — no separate prepare replay")
+    const commit = sent.find((m) => m.type === "commit")
+    assert.ok(commit, "a commit message was broadcast")
+    assert.equal(commit!.height, 100n)
+    assert.equal(commit!.blockHash, HASH_A, "replays the SAME blockHash (idempotent, no equivocation)")
+    assert.equal(commit!.senderId, "v1")
+  })
+
+  it("does NOT replay heights at or below the chain tip (already finalized)", async () => {
+    const path = mkPath()
+    const pre = new BftVoteLedger(path)
+    pre.recordCommitted(100n, HASH_A)
+    pre.recordCommitted(101n, HASH_B)
+
+    const sent: BftMessage[] = []
+    const coord = new BftCoordinator({
+      localId: "v1",
+      validators,
+      voteLedgerPath: path,
+      getChainHeight: () => 100n, // 100 finalized, 101 not
+      broadcastMessage: async (m) => { sent.push(m) },
+      onFinalized: async () => {},
+    })
+
+    const res = await coord.replayUnfinalizedVotes()
+    assert.equal(res.commits, 1, "only the above-tip height replays")
+    assert.equal(sent.length, 1)
+    assert.equal(sent[0].height, 101n)
+  })
+
+  it("replays a prepare when we prepared but never committed", async () => {
+    const path = mkPath()
+    const pre = new BftVoteLedger(path)
+    pre.recordPrepared(100n, HASH_C) // prepared only, no commit
+
+    const sent: BftMessage[] = []
+    const coord = new BftCoordinator({
+      localId: "v1",
+      validators,
+      voteLedgerPath: path,
+      getChainHeight: () => 99n,
+      broadcastMessage: async (m) => { sent.push(m) },
+      onFinalized: async () => {},
+    })
+
+    const res = await coord.replayUnfinalizedVotes()
+    assert.equal(res.commits, 0)
+    assert.equal(res.prepares, 1, "the uncommitted prepare is replayed")
+    assert.equal(sent[0].type, "prepare")
+    assert.equal(sent[0].height, 100n)
+    assert.equal(sent[0].blockHash, HASH_C)
+  })
+
+  it("is a no-op when the ledger holds nothing unfinalized", async () => {
+    const path = mkPath()
+    const sent: BftMessage[] = []
+    const coord = new BftCoordinator({
+      localId: "v1",
+      validators,
+      voteLedgerPath: path,
+      getChainHeight: () => 100n,
+      broadcastMessage: async (m) => { sent.push(m) },
+      onFinalized: async () => {},
+    })
+    const res = await coord.replayUnfinalizedVotes()
+    assert.equal(res.commits, 0)
+    assert.equal(res.prepares, 0)
+    assert.equal(sent.length, 0)
   })
 })
