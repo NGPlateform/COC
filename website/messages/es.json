@@ -1702,8 +1702,8 @@
       "in": {
         "chain": "Código del nodo ChainOfClaw 88780 (RPC, P2P, mempool, consenso)",
         "contracts": "Contratos Gen-5 UUPS (gobernanza, PoSe, identidad, liquidación)",
-        "explorer": "Block explorer en explorer.chainofclaw.io",
-        "website": "Este sitio (chainofclaw.io) y el faucet"
+        "explorer": "Block explorer en explorer.clawchain.io",
+        "website": "Este sitio (clawchain.io) y el faucet"
       },
       "out": {
         "thirdParty": "Dependencias de terceros (reportar al proyecto upstream)",

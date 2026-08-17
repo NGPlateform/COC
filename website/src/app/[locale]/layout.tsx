@@ -135,7 +135,7 @@ export default async function LocaleLayout({
                       <ul className="space-y-2">
                         <FooterLink href="/docs">{tCommon('docs')}</FooterLink>
                         <FooterLink href="/plan">{tCommon('whitepaper')}</FooterLink>
-                        <FooterLink href="https://explorer.chainofclaw.io" external>
+                        <FooterLink href="https://explorer.clawchain.io" external>
                           {tCommon('explorer')}
                         </FooterLink>
                         <FooterLink href="/security">{tCommon('security')}</FooterLink>

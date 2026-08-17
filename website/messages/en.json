@@ -1717,8 +1717,8 @@
       "in": {
         "chain": "ChainOfClaw 88780 node code (RPC, P2P, mempool, consensus)",
         "contracts": "Gen-5 UUPS smart contracts (governance, PoSe, identity, settlement)",
-        "explorer": "Block explorer at explorer.chainofclaw.io",
-        "website": "This website (chainofclaw.io) and the faucet"
+        "explorer": "Block explorer at explorer.clawchain.io",
+        "website": "This website (clawchain.io) and the faucet"
       },
       "out": {
         "thirdParty": "Third-party dependencies (report to the upstream project)",

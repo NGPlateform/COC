@@ -1702,8 +1702,8 @@
       "in": {
         "chain": "ChainOfClaw 88780 ノードコード(RPC, P2P, mempool, 合意)",
         "contracts": "Gen-5 UUPS スマートコントラクト(ガバナンス、PoSe、ID、決済)",
-        "explorer": "ブロックエクスプローラー explorer.chainofclaw.io",
-        "website": "本サイト(chainofclaw.io)と faucet"
+        "explorer": "ブロックエクスプローラー explorer.clawchain.io",
+        "website": "本サイト(clawchain.io)と faucet"
       },
       "out": {
         "thirdParty": "サードパーティ依存(上流プロジェクトへ報告)",
