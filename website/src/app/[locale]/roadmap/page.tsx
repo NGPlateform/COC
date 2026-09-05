@@ -1,47 +1,19 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { PageHero, AntiqueDivider } from '@/components/shared/Manuscript'
+import { ConstellationInk } from '@/components/ink/InkArt'
 
 export default function RoadmapPage() {
   const t = useTranslations('roadmap')
 
   return (
     <div className="relative min-h-screen">
-      {/* Hero Section - Tech Futurism */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary">
-          <div className="absolute inset-0 opacity-30">
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto">
-            {/* Pre-title */}
-            <div className="inline-block mb-6 fade-in">
-              <div className="">
-                <span className="kicker">
-                  DEVELOPMENT_ROADMAP
-                </span>
-              </div>
-            </div>
-
-            {/* Title */}
-            <h1 className="text-5xl md:text-6xl font-display font-bold mb-6 fade-in-delay-1">
-              <span className="ink-underline">{t('title')}</span>
-            </h1>
-            <p className="text-xl text-text-secondary max-w-3xl font-body fade-in-delay-2">
-              {t('subtitle')}
-            </p>
-          </div>
-        </div>
-
-        {/* Bottom Glow Line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent" />
-      </section>
+      <PageHero kicker="DEVELOPMENT_ROADMAP" title={t('title')} subtitle={t('subtitle')} mark={<ConstellationInk size={40} />} />
 
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Whitepaper Roadmap */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
@@ -82,6 +54,7 @@ export default function RoadmapPage() {
         </section>
 
         {/* Implementation Progress */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
@@ -108,6 +81,7 @@ export default function RoadmapPage() {
         </section>
 
         {/* Key Milestones Timeline */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
@@ -169,7 +143,7 @@ export default function RoadmapPage() {
 
         {/* CTA */}
         <section className="mt-20 relative overflow-hidden rounded-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/10 via-accent-blue/10 to-accent-purple/10" />
+          <div className="absolute inset-0 bg-accent-purple/5" />
           <div className="absolute inset-0" />
 
           <div className="relative z-10 p-12 text-center">
@@ -243,7 +217,7 @@ function PhaseCard({
       {/* Header */}
       <div className="relative bg-accent-purple p-6 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan via-accent-blue to-accent-purple" />
+          <div className="absolute inset-0 bg-accent-purple" />
         </div>
         <div className="relative z-10 flex justify-between items-center">
           <div>
@@ -271,7 +245,6 @@ function PhaseCard({
       </div>
 
       {/* Bottom Border Accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }
@@ -359,7 +332,6 @@ function FuturePlanCard({ icon, title, items }: { icon: string; title: string; i
       </ul>
 
       {/* Bottom Border Accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }

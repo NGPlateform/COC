@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { AntiqueDivider } from '@/components/shared/Manuscript'
 import { Link } from '@/i18n/routing'
 import { TopologyDiagram } from '@/components/diagrams/TopologyDiagram'
 
@@ -45,6 +46,7 @@ export default function TestnetPage() {
 
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Network Info Cards */}
+        <AntiqueDivider />
         <section className="mb-16">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -71,6 +73,7 @@ export default function TestnetPage() {
         </section>
 
         {/* Quick Start */}
+        <AntiqueDivider />
         <section className="mb-16">
           <div className="text-center mb-6 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -117,6 +120,7 @@ export default function TestnetPage() {
         </section>
 
         {/* Connect Wallet */}
+        <AntiqueDivider />
         <section className="mb-16">
           <div className="vellum-card p-8 md:p-12">
             <div className="max-w-2xl mx-auto text-center">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { AntiqueDivider } from '@/components/shared/Manuscript'
 import { Link } from '@/i18n/routing'
 
 export default function ServicesPage() {
@@ -9,7 +10,7 @@ export default function ServicesPage() {
   return (
     <div className="relative">
       {/* Hero */}
-      <section className="relative border-b border-line grain">
+      <section className="manuscript-hero manuscript-hero--compact relative">
         <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block mb-6 fade-in">
@@ -35,6 +36,7 @@ export default function ServicesPage() {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent" />
       </section>
 
+      <AntiqueDivider />
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Service 1: DID */}
         <ServiceCard
