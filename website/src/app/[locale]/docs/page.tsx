@@ -1,44 +1,19 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { PageHero, AntiqueDivider } from '@/components/shared/Manuscript'
+import { ScrollInk } from '@/components/ink/InkArt'
 import { Link } from '@/i18n/routing'
 
 export default function DocsPage() {
   const t = useTranslations('docs')
   return (
     <div className="relative min-h-screen">
-      {/* Header - Tech Futurism */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary">
-          <div className="absolute inset-0 opacity-30">
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-6 fade-in">
-              <div className="">
-                <span className="kicker">
-                  DOCUMENTATION_v2.0
-                </span>
-              </div>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 fade-in-delay-1">
-              <span className="ink-underline">{t('title')}</span>
-            </h1>
-            <p className="text-xl text-text-secondary max-w-2xl mx-auto font-body fade-in-delay-2">
-              {t('subtitle')}
-            </p>
-          </div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent" />
-      </section>
+      <PageHero kicker="DOCUMENTATION_v2.0" title={t('title')} subtitle={t('subtitle')} mark={<ScrollInk size={40} />} />
 
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Quick Start */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -74,6 +49,7 @@ export default function DocsPage() {
         </section>
 
         {/* Core Documentation */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -121,6 +97,7 @@ export default function DocsPage() {
         </section>
 
         {/* Development Guides */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -157,6 +134,7 @@ export default function DocsPage() {
         </section>
 
         {/* Implementation Status */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -234,6 +212,7 @@ export default function DocsPage() {
         </section>
 
         {/* Tools */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -269,7 +248,7 @@ export default function DocsPage() {
 
         {/* Resources */}
         <section className="fade-in-up">
-          <div className="relative bg-gradient-to-br from-accent-cyan/10 via-accent-blue/10 to-accent-purple/10 rounded-xl p-10 border border-accent-cyan/30 overflow-hidden">
+          <div className="relative vellum-card rounded-xl p-10 overflow-hidden">
             <div className="absolute inset-0 bg-accent-blue opacity-[0.04]" />
 
             <div className="relative z-10">
@@ -353,8 +332,6 @@ function QuickStartCard({
           </pre>
         </details>
       )}
-
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }
@@ -395,8 +372,6 @@ function DocCard({
           </a>
         ))}
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }
@@ -435,8 +410,6 @@ function GuideCard({
           </li>
         ))}
       </ul>
-
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }
@@ -517,8 +490,6 @@ function ToolCard({
           <span className="inline-block group-hover/link:translate-x-1 transition-transform">→</span>
         </a>
       )}
-
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }

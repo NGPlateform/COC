@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/routing'
 import { Reveal, ReadingProgress } from '@/components/story/Reveal'
+import { AntiqueDivider } from '@/components/shared/Manuscript'
 import { AgentLayersDiagram } from '@/components/diagrams/AgentLayersDiagram'
 import { ScrollInk, SealInk, QuillInk } from '@/components/ink/InkArt'
 
@@ -49,13 +50,14 @@ export default function StoryPage() {
                 </div>
                 <p className="text-sm italic text-text-muted opacity-80">{t('strataBottomLine')}</p>
               </div>
-              <div className="h-2 -mt-1 ml-12 mr-3 rounded-b-lg bg-bg-secondary border border-t-0 border-line opacity-50 rotate-[1.4deg]" />
+              <div className="h-2 -mt-1 ml-12 mr-3 rounded-b-lg bg-[#efe4c9] border border-t-0 border-line opacity-50 rotate-[1.4deg]" />
             </div>
           </Reveal>
         </div>
       </section>
 
       {/* ========== 第一章:ClawChain ========== */}
+      <AntiqueDivider />
       <section className="py-section">
         <div className="container mx-auto px-4 max-w-3xl">
           <Reveal>
@@ -76,7 +78,8 @@ export default function StoryPage() {
       </section>
 
       {/* ========== 第二章:淬炼 ========== */}
-      <section className="py-section bg-bg-secondary border-y border-line grain">
+      <AntiqueDivider />
+      <section className="py-section">
         <div className="container mx-auto px-4 max-w-3xl">
           <Reveal>
             <ChapterHead label={t('ch2.label')} title={t('ch2.title')} icon={<SealInk size={26} />} />
@@ -98,6 +101,7 @@ export default function StoryPage() {
       </section>
 
       {/* ========== 第三章:PaliMesh ========== */}
+      <AntiqueDivider />
       <section className="py-section">
         <div className="container mx-auto px-4 max-w-3xl">
           <Reveal>
@@ -134,7 +138,8 @@ export default function StoryPage() {
       </section>
 
       {/* ========== 高潮 CTA ========== */}
-      <section className="py-section bg-bg-secondary border-t border-line grain">
+      <AntiqueDivider />
+      <section className="py-section">
         <div className="container mx-auto px-4 max-w-2xl text-center">
           {/* 品牌承诺句(与首页羊皮纸法则同源) */}
           <Reveal>

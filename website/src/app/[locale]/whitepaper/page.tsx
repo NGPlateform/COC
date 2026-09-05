@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations, useLocale } from 'next-intl'
+import { AntiqueDivider } from '@/components/shared/Manuscript'
 import { Link } from '@/i18n/routing'
 
 export default function WhitepaperPage() {
@@ -40,6 +41,7 @@ export default function WhitepaperPage() {
       </section>
 
       {/* Overview sections */}
+      <AntiqueDivider />
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-3xl space-y-6">
           {sections.map((s) => (

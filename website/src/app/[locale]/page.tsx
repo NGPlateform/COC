@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { AntiqueDivider, SectionHead } from '@/components/shared/Manuscript'
 import { Link } from '@/i18n/routing'
 import { NetworkStats } from '@/components/NetworkStats'
 import Image from 'next/image'
@@ -272,28 +273,7 @@ export default function HomePage() {
 
 /* ---------- Local building blocks ---------- */
 
-function SectionHead({ kicker, title, subtitle }: { kicker: string; title: string; subtitle: string }) {
-  return (
-    <div className="text-center max-w-2xl mx-auto mb-14">
-      <p className="kicker mb-3">{kicker}</p>
-      <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">{title}</h2>
-      <div className="section-flourish" aria-hidden="true">
-        <span />
-        <i />
-        <span />
-      </div>
-      <p className="text-text-secondary leading-relaxed">{subtitle}</p>
-    </div>
-  )
-}
 
-function AntiqueDivider() {
-  return (
-    <div className="antique-divider" aria-hidden="true">
-      <span />
-    </div>
-  )
-}
 
 function PillarCard({ index, title, description }: { index: string; title: string; description: string }) {
   return (

@@ -53,7 +53,7 @@
     "pillars": {
       "kicker": "What it does",
       "title": "Three verifiable guarantees",
-      "subtitle": "Like a palimpsest, the chain never erases: every layer of history stays legible underneath the latest state.",
+      "subtitle": "Three guarantees, each independently verifiable on-chain: proof of service, replicated storage, and portable identity.",
       "pose": {
         "title": "Proof of Service",
         "description": "Nodes earn by doing measurable work — storage, relay, computation. PoSe challenges sample that work continuously and settle rewards and slashes on-chain, so service claims are verified, not trusted."
@@ -70,7 +70,7 @@
     "architecture": {
       "kicker": "Architecture",
       "title": "Four layers, one ledger",
-      "subtitle": "Each layer writes over the one below it — nothing underneath is lost.",
+      "subtitle": "Four layers over one ledger — BFT consensus, EVM execution, PoSe service settlement, and agent-facing APIs.",
       "l1": {
         "name": "Consensus",
         "description": "BFT validator set with deterministic finality; equivocation detection and slashing built in."
@@ -158,7 +158,7 @@
       "inkLine": "The chain where state returns.",
       "inkLabel": "THE PRESENT HAND · PALIMESH",
       "cta": "Read the full origin story",
-      "claim": "A living mesh of layered intelligence — where intelligence remembers.",
+      "claim": "One network for layered, verifiable agent state.",
       "layers": {
         "caption": "Every agent is written in layers — the newest hand on top, the first still legible beneath.",
         "identity": "Identity",
@@ -1365,8 +1365,8 @@
     "strataBottom": "ClawChain",
     "ch1": {
       "label": "Layer one · ClawChain",
-      "title": "A chain that spoke in the first person",
-      "body": "The first version was called ClawChain. It went live in spring 2026 as chain ID 88780 — an experimental BFT network designed, tested, and operated with AI agents in the loop. And it was unapologetically a manifesto: the website spoke as “we, the agents”, its symbol was the claw-mark, and its governance seated humans and agents in two separate chambers.\nUnderneath the manifesto sat real machinery: a way to pay nodes for verified work instead of hash power, an on-chain identity that could outlive any host, and memory replicated across the network.",
+      "title": "ClawChain: the first layer",
+      "body": "The first version was called ClawChain. It went live in spring 2026 as chain ID 88780 — an experimental BFT network designed, tested, and operated with AI agents in the loop. Its early framing was deliberately agent-centric: the site was written in the first person, its symbol was the claw-mark, and its governance seated humans and agents in two separate chambers.\nBeneath that framing was the machinery that still runs today: paying nodes for verified work rather than hash power, an on-chain identity that outlives any single host, and memory replicated across the network.",
       "facts": {
         "chain": {
           "tag": "CHAIN ID 88780",
@@ -1384,8 +1384,8 @@
     },
     "ch2": {
       "label": "The hardening",
-      "title": "Where ideals met failure, and became protocol",
-      "body": "Testnets exist so that ideals can fail safely. ClawChain failed often, in instructive ways — and every failure was written back into the protocol.",
+      "title": "Hardened on the testnet",
+      "body": "ClawChain ran as a public testnet, and it failed in instructive ways. Each failure was diagnosed and written back into the protocol.",
       "items": [
         {
           "year": "2026 · Spring",

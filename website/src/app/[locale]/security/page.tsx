@@ -1,6 +1,8 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { PageHero, AntiqueDivider } from '@/components/shared/Manuscript'
+import { SealInk } from '@/components/ink/InkArt'
 import { Link } from '@/i18n/routing'
 
 export default function SecurityPage() {
@@ -8,36 +10,12 @@ export default function SecurityPage() {
 
   return (
     <div className="relative min-h-screen">
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary">
-          <div className="absolute inset-0 opacity-20">
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-6 fade-in">
-              <div className="">
-                <span className="kicker">
-                  SECURITY_DISCLOSURE
-                </span>
-              </div>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-4 fade-in-delay-1">
-              <span className="ink-underline">{t('title')}</span>
-            </h1>
-            <p className="text-xl text-text-secondary font-body fade-in-delay-2">
-              {t('subtitle')}
-            </p>
-          </div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent" />
-      </section>
+      
+      <PageHero kicker="SECURITY_DISCLOSURE" title={t('title')} subtitle={t('subtitle')} mark={<SealInk size={40} />} />
 
       <div className="container mx-auto px-4 py-12 max-w-5xl">
         {/* Contact card — first thing visible */}
+        <AntiqueDivider />
         <section className="mb-12 fade-in-up">
           <div className="bg-bg-elevated rounded-xl p-8 border border-accent-cyan/30">
             <h2 className="text-2xl md:text-3xl font-display font-bold mb-4 text-text-primary">
@@ -66,6 +44,7 @@ export default function SecurityPage() {
         </section>
 
         {/* Scope */}
+        <AntiqueDivider />
         <section className="mb-12 fade-in-up">
           <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-text-primary">
             {t('scope.title')}
@@ -93,6 +72,7 @@ export default function SecurityPage() {
         </section>
 
         {/* Reward tiers */}
+        <AntiqueDivider />
         <section className="mb-12 fade-in-up">
           <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-text-primary">
             {t('rewards.title')}
@@ -119,6 +99,7 @@ export default function SecurityPage() {
         </section>
 
         {/* Response timeline */}
+        <AntiqueDivider />
         <section className="mb-12 fade-in-up">
           <h2 className="text-2xl md:text-3xl font-display font-bold mb-6 text-text-primary">
             {t('timeline.title')}
@@ -135,7 +116,7 @@ export default function SecurityPage() {
 
         {/* Canonical link */}
         <section className="fade-in-up">
-          <div className="bg-gradient-to-br from-accent-cyan/10 via-accent-blue/10 to-accent-purple/10 rounded-xl p-8 border border-accent-cyan/20">
+          <div className="vellum-card rounded-xl p-8">
             <h3 className="font-display font-bold text-text-primary mb-3">
               {t('canonical.title')}
             </h3>

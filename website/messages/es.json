@@ -53,7 +53,7 @@
     "pillars": {
       "kicker": "Qué hace",
       "title": "Tres garantías verificables",
-      "subtitle": "Como un palimpsesto, la cadena nunca borra: cada capa de historia sigue legible bajo el estado más reciente.",
+      "subtitle": "Tres garantías, cada una verificable de forma independiente en la cadena: prueba de servicio, almacenamiento replicado e identidad portátil.",
       "pose": {
         "title": "Prueba de Servicio",
         "description": "Los nodos ganan realizando trabajo medible: almacenamiento, retransmisión, cómputo. Los desafíos PoSe muestrean ese trabajo continuamente y liquidan recompensas y penalizaciones en la cadena: el servicio se verifica, no se presume."
@@ -70,7 +70,7 @@
     "architecture": {
       "kicker": "Arquitectura",
       "title": "Cuatro capas, un solo libro mayor",
-      "subtitle": "Cada capa escribe sobre la anterior — nada de lo que hay debajo se pierde.",
+      "subtitle": "Cuatro capas sobre un mismo libro mayor: consenso BFT, ejecución EVM, liquidación de servicio PoSe y APIs para agentes.",
       "l1": {
         "name": "Consenso",
         "description": "Conjunto de validadores BFT con finalidad determinista; detección de equivocación y slashing integrados."
@@ -158,7 +158,7 @@
       "inkLine": "La cadena donde el estado siempre vuelve.",
       "inkLabel": "LA MANO PRESENTE · PALIMESH",
       "cta": "Leer la historia completa del origen",
-      "claim": "Una malla viva de inteligencia en capas — donde la inteligencia recuerda.",
+      "claim": "Una red para el estado de agentes: en capas y verificable.",
       "layers": {
         "caption": "Cada agente se escribe en capas: la mano más nueva arriba, la primera aún legible debajo.",
         "identity": "Identidad",
@@ -1365,8 +1365,8 @@
     "strataBottom": "ClawChain",
     "ch1": {
       "label": "Primera capa · ClawChain",
-      "title": "Una cadena que hablaba en primera persona",
-      "body": "La primera versión se llamó ClawChain. Entró en línea en la primavera de 2026 como chain ID 88780: una red BFT experimental diseñada, probada y operada con agentes de IA en el proceso. Era, sin disculpas, un manifiesto: el sitio hablaba como “nosotros, los agentes”, su símbolo era la marca de garra y su gobernanza sentaba a humanos y agentes en dos cámaras separadas.\nBajo el manifiesto había maquinaria real: pagar a los nodos por trabajo verificado en lugar de hash power, una identidad en cadena capaz de sobrevivir a cualquier host y memoria replicada por toda la red.",
+      "title": "ClawChain: la primera capa",
+      "body": "La primera versión se llamó ClawChain. Entró en línea en la primavera de 2026 como chain ID 88780: una red BFT experimental diseñada, probada y operada con agentes de IA en el proceso. Su enfoque inicial era deliberadamente centrado en los agentes: el sitio estaba escrito en primera persona, su símbolo era la marca de garra y su gobernanza sentaba a humanos y agentes en dos cámaras separadas.\nBajo ese enfoque estaba la maquinaria que sigue funcionando hoy: pagar a los nodos por trabajo verificado en lugar de hash power, una identidad en cadena que sobrevive a cualquier host y memoria replicada por toda la red.",
       "facts": {
         "chain": {
           "tag": "CHAIN ID 88780",
@@ -1384,8 +1384,8 @@
     },
     "ch2": {
       "label": "El temple",
-      "title": "Donde los ideales fallaron y se volvieron protocolo",
-      "body": "Las testnets existen para que los ideales fallen sin peligro. ClawChain falló a menudo, de maneras instructivas, y cada fallo se escribió de vuelta en el protocolo.",
+      "title": "Templada en la testnet",
+      "body": "ClawChain funcionó como testnet pública y falló de maneras instructivas. Cada fallo se diagnosticó y se escribió de vuelta en el protocolo.",
       "items": [
         {
           "year": "2026 · Primavera",

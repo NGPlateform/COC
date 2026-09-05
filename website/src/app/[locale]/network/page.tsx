@@ -4,6 +4,8 @@ import { NetworkStats } from '@/components/NetworkStats'
 import { rpcCall } from '@/lib/rpc'
 import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
+import { PageHero, AntiqueDivider } from '@/components/shared/Manuscript'
+import { ConstellationInk } from '@/components/ink/InkArt'
 import { useEffect, useState } from 'react'
 
 // Moved to client component for consistency with design system
@@ -210,56 +212,12 @@ export default function NetworkPage() {
   return (
     <div className="relative min-h-screen">
       {/* Hero Header */}
-      <section className="relative py-20 overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary">
-          <div className="absolute inset-0 opacity-20">
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Pre-title */}
-            <div className="inline-block mb-6 fade-in">
-              <div className="">
-                <span className="kicker">
-                  NETWORK_STATUS_MONITOR
-                </span>
-              </div>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-4 fade-in-delay-1">
-              <span className="ink-underline">{t('title')}</span>
-            </h1>
-            <p className="text-xl text-text-secondary font-body fade-in-delay-2">
-              {t('subtitle')}
-            </p>
-
-            {/* Canary 88780 status banner (replaces obsolete launch countdown) */}
-            <div className="mt-12 mb-6 fade-in-delay-3">
-              <div className="inline-block px-6 py-4 rounded-lg border border-accent-cyan/50 bg-accent-cyan/10">
-                <p className="text-sm text-accent-cyan font-display uppercase tracking-widest mb-2">
-                  🟢 {t('canaryBanner.title')}
-                </p>
-                <p className="text-base text-text-primary font-display">
-                  {t('canaryBanner.subtitle')}
-                </p>
-                <p className="text-xs text-accent-cyan/70 mt-3">
-                  <Link href="/docs" className="hover:text-accent-blue transition-colors">
-                    {t('canaryBanner.cta')} →
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Glow Line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent" />
-      </section>
+      
+      <PageHero kicker="NETWORK_STATUS_MONITOR" title={t('title')} subtitle={t('subtitle')} mark={<ConstellationInk size={40} />} />
 
       <div className="container mx-auto px-4 py-12">
         {/* Real-time Stats */}
+        <AntiqueDivider />
         <section className="mb-16">
           <div className="text-center mb-8 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -603,7 +561,7 @@ export default function NetworkPage() {
 
         {/* Quick Links */}
         <section className="fade-in-delay-3">
-          <div className="relative bg-gradient-to-br from-accent-cyan/10 via-accent-blue/10 to-accent-purple/10 rounded-xl p-8 border border-accent-cyan/20 overflow-hidden">
+          <div className="relative vellum-card rounded-xl p-8 overflow-hidden">
             {/* Background Glow */}
             <div className="absolute inset-0 bg-accent-blue opacity-[0.04]" />
 
@@ -690,7 +648,6 @@ function MetricCard({
       </div>
 
       {/* Bottom Border Accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }
@@ -729,8 +686,6 @@ function StatMetricCard({
           </div>
         )}
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   )
 }
@@ -774,7 +729,6 @@ function QuickLink({
       </div>
 
       {/* Bottom Border Accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </Component>
   )
 }

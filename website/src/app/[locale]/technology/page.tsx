@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { AntiqueDivider } from '@/components/shared/Manuscript'
 import { ArchitectureDiagram } from '@/components/diagrams/ArchitectureDiagram'
 import { PoseFlowDiagram } from '@/components/diagrams/PoseFlowDiagram'
 
@@ -25,6 +26,7 @@ export default function TechnologyPage() {
 
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Architecture Layers */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -82,6 +84,7 @@ export default function TechnologyPage() {
         </section>
 
         {/* PoSe Protocol Deep Dive */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -182,6 +185,7 @@ export default function TechnologyPage() {
         </section>
 
         {/* Performance Metrics */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -224,6 +228,7 @@ export default function TechnologyPage() {
         </section>
 
         {/* Comparison */}
+        <AntiqueDivider />
         <section className="mb-20">
           <div className="text-center mb-12 fade-in-up">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-2">
