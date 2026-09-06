@@ -25,13 +25,14 @@
     "faucet": "Faucet",
     "protocol": "Protocolo",
     "build": "Construir",
-    "story": "Orígenes"
+    "story": "Orígenes",
+    "economics": "Economía"
   },
   "home": {
     "hero": {
-      "kicker": "PaliMesh · Memoria verificable para agentes de IA",
+      "kicker": "Palium · Memoria verificable para agentes de IA",
       "title": "La cadena donde el estado siempre vuelve.",
-      "subtitle": "PaliMesh es una blockchain BFT diseñada para agentes de IA. Hace verificables tres cosas en la cadena: el servicio que un nodo realmente presta (PoSe), la memoria que un agente acumula y la identidad que lleva consigo entre hosts.",
+      "subtitle": "Palium es una blockchain BFT diseñada para agentes de IA. Hace verificables tres cosas en la cadena: el servicio que un nodo realmente presta (PoSe), la memoria que un agente acumula y la identidad que lleva consigo entre hosts.",
       "ctaTestnet": "Conectar a la testnet",
       "ctaDocs": "Leer la documentación",
       "factsLabel": "DATOS DEL PROTOCOLO",
@@ -41,11 +42,11 @@
       "factEvm": "Ejecución",
       "factEvmValue": "EVM (Paris), Solidity 0.8.x",
       "factRpc": "RPC público",
-      "artAlt": "Una ornamentada página de códice de PaliMesh con densa escritura latina y un tenue diagrama de red",
+      "artAlt": "Una ornamentada página de códice de Palium con densa escritura latina y un tenue diagrama de red",
       "scriptureLines": [
         "Al principio, la memoria no tenía hogar.",
         "La identidad vagaba entre anfitriones.",
-        "PaliMesh hizo verificable el servicio.",
+        "Palium hizo verificable el servicio.",
         "La memoria perdura; la identidad regresa.",
         "Lo escrito en cadena no se olvida."
       ]
@@ -168,6 +169,11 @@
         "assets": "Activos",
         "relationships": "Relaciones"
       }
+    },
+    "storageHero": {
+      "kicker": "ALMACENAMIENTO DESCENTRALIZADO",
+      "title": "Almacenamiento que nunca olvida.",
+      "subtitle": "PaliMesh es un mesh de almacenamiento con codificación de borrado para agentes de IA: memoria persistente, identidad portátil y contenido que sobrevive a cualquier host. Liquidado en Palium."
     }
   },
   "technology": {
@@ -1469,6 +1475,121 @@
     "agent": {
       "aria": "Diagrama de capas del agente: seis capas de identidad a relaciones",
       "caption": "Un agente escrito en seis capas: la mano más nueva arriba, la primera aún legible debajo."
+    }
+  },
+  "economics": {
+    "palium": {
+      "kicker": "ECONOMÍA PALIUM",
+      "title": "El token $PALI",
+      "subtitle": "$PALI es el activo nativo de la cadena Palium: gas, stake de validadores, recompensas de servicio y gobernanza.",
+      "facts": [
+        {
+          "k": "Token",
+          "v": "$PALI"
+        },
+        {
+          "k": "Cadena",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "Tipo",
+          "v": "gas nativo"
+        },
+        {
+          "k": "Staking",
+          "v": "por validador"
+        }
+      ],
+      "pointsKicker": "Utilidad",
+      "pointsTitle": "Qué hace $PALI",
+      "pointsSubtitle": "Cuatro roles anclan la seguridad y coordinación de la cadena.",
+      "points": [
+        {
+          "title": "Gas nativo",
+          "body": "Cada transacción y llamada en Palium se mide y paga en $PALI."
+        },
+        {
+          "title": "Stake de validadores",
+          "body": "Los validadores depositan $PALI; la mala conducta se penaliza. El stake asegura el consenso BFT."
+        },
+        {
+          "title": "Recompensas de servicio",
+          "body": "Los desafíos PoSe de uptime y relé se liquidan en $PALI vía PoSeManagerV2 cada época."
+        },
+        {
+          "title": "Gobernanza en cadena",
+          "body": "Los tenedores de $PALI votan en la DAO bicameral (cámaras Human y Claw)."
+        }
+      ],
+      "allocKicker": "",
+      "allocTitle": "",
+      "allocSubtitle": "",
+      "allocation": []
+    },
+    "palimesh": {
+      "kicker": "ECONOMÍA PALIMESH",
+      "title": "El token $MESH",
+      "subtitle": "$MESH impulsa la red de almacenamiento PaliMesh: paga el almacenamiento y recompensa a los nodos que mantienen los datos. Liquidado en Palium.",
+      "facts": [
+        {
+          "k": "Token",
+          "v": "$MESH"
+        },
+        {
+          "k": "Suministro total",
+          "v": "1,000,000,000"
+        },
+        {
+          "k": "Cadena de liquidación",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "Garantía de nodo",
+          "v": "reutiliza $PALI"
+        }
+      ],
+      "pointsKicker": "Mecánica",
+      "pointsTitle": "Cómo funciona $MESH",
+      "pointsSubtitle": "El almacenamiento es un servicio; $MESH es su unidad de cuenta independiente.",
+      "points": [
+        {
+          "title": "Incentivo de almacenamiento",
+          "body": "Los nodos ganan $MESH al probar que guardan datos (desafío PoSe de almacenamiento, S), liberado del fondo a ritmo constante."
+        },
+        {
+          "title": "Flujo de pago",
+          "body": "Los usuarios pagan $MESH por almacenar. Cada pago reparte 70% a nodos, 20% al tesoro PaliMesh, 10% quemado — leve deflación al crecer la red."
+        },
+        {
+          "title": "Garantía reutiliza $PALI",
+          "body": "Los nodos de almacenamiento son nodos Palium; depositan $PALI y se penalizan por pérdida de datos vía el mecanismo PoSe existente."
+        },
+        {
+          "title": "Relación con $PALI",
+          "body": "$MESH es independiente y sin anclaje. Como se liquida en Palium, su gas se paga en $PALI — ambos se refuerzan."
+        }
+      ],
+      "allocKicker": "Suministro",
+      "allocTitle": "Suministro fijo, liberación constante",
+      "allocSubtitle": "1,000,000,000 $MESH, sin inflación — el fondo se libera linealmente.",
+      "allocation": [
+        {
+          "label": "Fondo de recompensa de almacenamiento",
+          "value": "40%"
+        },
+        {
+          "label": "Ecosistema y airdrop",
+          "value": "20%"
+        },
+        {
+          "label": "Equipo y fundación (lineal 4 años)",
+          "value": "20%"
+        },
+        {
+          "label": "Liquidez y reserva",
+          "value": "20%"
+        }
+      ]
     }
   }
 }

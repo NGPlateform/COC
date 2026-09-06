@@ -253,7 +253,7 @@ function ServiceCard({
                 {contracts.map((ct) => (
                   <a
                     key={ct.addr}
-                    href={`https://explorer.palimesh.io/address/${ct.addr}`}
+                    href={`https://explorer.palium.io/address/${ct.addr}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block bg-bg-primary/40 rounded p-2 hover:bg-bg-primary/60 transition-colors group"

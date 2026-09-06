@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { site } from '@/config/site'
 import { AntiqueDivider, SectionHead } from '@/components/shared/Manuscript'
 import { Link } from '@/i18n/routing'
 import { NetworkStats } from '@/components/NetworkStats'
@@ -12,6 +13,7 @@ import { Parallax, InkDraw } from '@/components/fx/Effects'
 
 export default function HomePage() {
   const t = useTranslations('home')
+  const heroNS = site.variant === 'palimesh' ? 'storageHero' : 'hero'
   const td = useTranslations('diagrams')
   const scriptureLines = t.raw('hero.scriptureLines') as string[]
 
@@ -23,12 +25,12 @@ export default function HomePage() {
         <div className="container relative z-10 mx-auto px-4 py-20 md:py-28 lg:py-32">
           <div className="grid items-center gap-14 md:grid-cols-[0.92fr_1.08fr] lg:gap-20">
             <div className="hero-copy">
-              <p className="kicker mb-4 hero-in hero-in-1">{t('hero.kicker')}</p>
+              <p className="kicker mb-4 hero-in hero-in-1">{t(`${heroNS}.kicker`)}</p>
               <h1 className="hero-title display-xl font-display font-bold mb-6 hero-in hero-in-2">
-                <span>{t('hero.title')}</span>
+                <span>{t(`${heroNS}.title`)}</span>
               </h1>
               <p className="hero-deck text-lg text-text-secondary leading-relaxed mb-8 max-w-xl hero-in hero-in-3">
-                {t('hero.subtitle')}
+                {t(`${heroNS}.subtitle`)}
               </p>
               <div className="flex flex-wrap gap-3 hero-in hero-in-4">
                 <Link

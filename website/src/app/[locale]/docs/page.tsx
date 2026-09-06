@@ -232,7 +232,7 @@ export default function DocsPage() {
               title={t('tools.explorer.title')}
               description={t('tools.explorer.description')}
               features={t.raw('tools.explorer.features') as string[]}
-              link="https://explorer.palimesh.io"
+              link="https://explorer.palium.io"
               openToolText={t('tools.openTool')}
               delay="0.1"
             />
