@@ -25,13 +25,14 @@
     "faucet": "水龙头",
     "protocol": "协议",
     "build": "开发接入",
-    "story": "起源"
+    "story": "起源",
+    "economics": "经济模型"
   },
   "home": {
     "hero": {
-      "kicker": "PaliMesh · AI 智能体的可验证记忆",
+      "kicker": "Palium · AI 智能体的可验证记忆",
       "title": "一切状态皆可回返的链。",
-      "subtitle": "PaliMesh 是一条为 AI 智能体构建的 BFT 区块链。它让三件事在链上可验证:节点真实执行的服务(PoSe)、智能体积累的记忆、以及可在宿主之间迁移的身份。",
+      "subtitle": "Palium 是一条为 AI 智能体构建的 BFT 区块链。它让三件事在链上可验证:节点真实执行的服务(PoSe)、智能体积累的记忆、以及可在宿主之间迁移的身份。",
       "ctaTestnet": "接入测试网",
       "ctaDocs": "阅读文档",
       "factsLabel": "协议参数",
@@ -41,11 +42,11 @@
       "factEvm": "执行层",
       "factEvmValue": "EVM(Paris),Solidity 0.8.x",
       "factRpc": "公共 RPC",
-      "artAlt": "繁复的中世纪风格 PaliMesh 羊皮纸抄本,密集拉丁经文下隐约可见网络图",
+      "artAlt": "繁复的中世纪风格 Palium 羊皮纸抄本,密集拉丁经文下隐约可见网络图",
       "scriptureLines": [
         "起初，记忆无所归依。",
         "身份在宿主之间漂泊。",
-        "PaliMesh 使服务可验证。",
+        "Palium 使服务可验证。",
         "使记忆不消逝，身份可回返。",
         "凡写入链上的，皆不被遗忘。"
       ]
@@ -168,6 +169,11 @@
         "assets": "资产 Assets",
         "relationships": "关系 Relationships"
       }
+    },
+    "storageHero": {
+      "kicker": "去中心化存储",
+      "title": "永不遗忘的存储。",
+      "subtitle": "PaliMesh 是面向 AI 智能体的纠删码存储 mesh——持久记忆、可携带身份、超越任何宿主的内容。结算锚定在 Palium。"
     }
   },
   "technology": {
@@ -1469,6 +1475,121 @@
     "agent": {
       "aria": "智能体六层状态图:从身份到关系",
       "caption": "以六层写就的智能体——最新一笔在最上,第一笔仍在底下可读。"
+    }
+  },
+  "economics": {
+    "palium": {
+      "kicker": "PALIUM 经济",
+      "title": "$PALI 代币",
+      "subtitle": "$PALI 是 Palium 链的原生资产——gas、验证者质押、服务奖励与治理。",
+      "facts": [
+        {
+          "k": "代币",
+          "v": "$PALI"
+        },
+        {
+          "k": "链",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "类型",
+          "v": "原生 gas"
+        },
+        {
+          "k": "质押",
+          "v": "每验证者"
+        }
+      ],
+      "pointsKicker": "效用",
+      "pointsTitle": "$PALI 的作用",
+      "pointsSubtitle": "四种角色锚定链的安全与协调。",
+      "points": [
+        {
+          "title": "原生 gas",
+          "body": "Palium 上每笔交易与合约调用都以 $PALI 计价支付。"
+        },
+        {
+          "title": "验证者质押",
+          "body": "验证者质押 $PALI,作恶被罚没。质押保障 BFT 共识。"
+        },
+        {
+          "title": "服务奖励",
+          "body": "PoSe 的 uptime 与 relay 挑战每 epoch 通过 PoSeManagerV2 以 $PALI 结算。"
+        },
+        {
+          "title": "链上治理",
+          "body": "$PALI 持有者在两院制 DAO(Human 院与 Claw 院)投票。"
+        }
+      ],
+      "allocKicker": "",
+      "allocTitle": "",
+      "allocSubtitle": "",
+      "allocation": []
+    },
+    "palimesh": {
+      "kicker": "PALIMESH 经济",
+      "title": "$MESH 代币",
+      "subtitle": "$MESH 驱动 PaliMesh 存储网络——为存储付费、奖励守护数据的节点。结算锚定在 Palium。",
+      "facts": [
+        {
+          "k": "代币",
+          "v": "$MESH"
+        },
+        {
+          "k": "总量",
+          "v": "1,000,000,000"
+        },
+        {
+          "k": "结算链",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "节点保证金",
+          "v": "复用 $PALI"
+        }
+      ],
+      "pointsKicker": "机制",
+      "pointsTitle": "$MESH 如何运作",
+      "pointsSubtitle": "存储是一项服务;$MESH 是它独立的记账单位。",
+      "points": [
+        {
+          "title": "存储激励",
+          "body": "存储节点通过证明持有数据(PoSe 存储 S 挑战)赚取 $MESH,由奖励池匀速释放。"
+        },
+        {
+          "title": "付费流向",
+          "body": "用户付 $MESH 存数据。每笔付费 70% 给存储节点、20% 进 PaliMesh 国库、10% 销毁——随网络增长的轻微通缩。"
+        },
+        {
+          "title": "保证金复用 $PALI",
+          "body": "存储节点即 Palium 节点,质押 $PALI,丢数据经现有 PoSe 机制被罚没,无需额外 $MESH 质押。"
+        },
+        {
+          "title": "与 $PALI 的关系",
+          "body": "$MESH 独立、不锚定。因结算在 Palium 上,其交易 gas 用 $PALI——两币互相成就而非竞争。"
+        }
+      ],
+      "allocKicker": "供应",
+      "allocTitle": "固定总量,匀速释放",
+      "allocSubtitle": "1,000,000,000 $MESH,无通胀——奖励池线性释放。",
+      "allocation": [
+        {
+          "label": "存储奖励池",
+          "value": "40%"
+        },
+        {
+          "label": "生态与空投",
+          "value": "20%"
+        },
+        {
+          "label": "团队与基金会(4 年线性)",
+          "value": "20%"
+        },
+        {
+          "label": "流动性与储备",
+          "value": "20%"
+        }
+      ]
     }
   }
 }

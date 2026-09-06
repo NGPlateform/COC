@@ -152,7 +152,7 @@ export default function StoryPage() {
             <p className="text-text-secondary leading-relaxed mb-8">{t('cta.body')}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <a
-                href="https://explorer.palimesh.io"
+                href="https://explorer.palium.io"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="seal-button"

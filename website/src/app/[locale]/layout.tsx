@@ -11,6 +11,7 @@ import { WalletConnect } from '@/components/identity/WalletConnect'
 import { MobileMenu } from '@/components/shared/MobileMenu'
 import { Link } from '@/i18n/routing'
 import { QuillInk } from '@/components/ink/InkArt'
+import { site } from '@/config/site'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -43,10 +44,9 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://palimesh.io'),
-  title: 'PaliMesh · The chain where state returns',
-  description:
-    'PaliMesh is a BFT blockchain purpose-built for AI agents: verifiable service (PoSe), persistent P2P storage, and portable on-chain identity. Chain ID 88780.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || site.apex),
+  title: site.title,
+  description: site.description,
 }
 
 export default async function LocaleLayout({
@@ -67,15 +67,7 @@ export default async function LocaleLayout({
   const tFooter = await getTranslations('footer')
   const tCommon = await getTranslations('common')
 
-  const navItems = [
-    { href: '/story', label: tCommon('story') },
-    { href: '/technology', label: tCommon('technology') },
-    { href: '/network', label: tCommon('network') },
-    { href: '/testnet', label: tCommon('testnet') },
-    { href: '/services', label: tCommon('services') },
-    { href: '/governance', label: tCommon('governance') },
-    { href: '/docs', label: tCommon('docs') },
-  ]
+  const navItems = site.navKeys.map((k) => ({ href: `/${k}`, label: tCommon(k) }))
 
   return (
     <html lang={locale} className={`${cormorant.variable} ${literata.variable} ${notoSerifSc.variable} ${jetbrains.variable}`}>
@@ -93,14 +85,14 @@ export default async function LocaleLayout({
                     className="scroll-brand group flex shrink-0 items-center gap-2.5 leading-none"
                   >
                     <Image
-                      src="/brand/logo-seal-simple.svg"
-                      alt="PaliMesh"
+                      src={site.logo}
+                      alt={site.brand}
                       width={42}
                       height={42}
                       className="brand-signet shrink-0 transition-transform group-hover:-rotate-3"
                     />
                     <span className="font-display font-bold text-2xl tracking-tight text-text-primary group-hover:text-accent-blue transition-colors">
-                      PaliMesh
+                      {site.brand}
                     </span>
                   </Link>
 
@@ -140,8 +132,8 @@ export default async function LocaleLayout({
                   {/* Brand Section */}
                   <div className="md:col-span-1">
                     <div className="flex items-center gap-2.5 mb-4">
-                      <Image className="brand-signet" src="/brand/logo-seal-simple.svg" alt="PaliMesh" width={42} height={42} />
-                      <h3 className="font-display font-bold text-lg text-text-primary">PaliMesh</h3>
+                      <Image className="brand-signet" src={site.logo} alt={site.brand} width={42} height={42} />
+                      <h3 className="font-display font-bold text-lg text-text-primary">{site.brand}</h3>
                       <QuillInk size={18} className="text-text-muted" />
                     </div>
                     <p className="text-text-secondary text-sm leading-relaxed">
@@ -168,8 +160,8 @@ export default async function LocaleLayout({
                     <ul className="space-y-2">
                       <FooterLink href="/docs">{tCommon('docs')}</FooterLink>
                       <FooterLink href="/testnet">{tCommon('testnet')}</FooterLink>
-                      <FooterLink href="https://explorer.palimesh.io" external>{tCommon('explorer')}</FooterLink>
-                      <FooterLink href="https://faucet.palimesh.io" external>{tCommon('faucet')}</FooterLink>
+                      <FooterLink href={site.chain.explorer} external>{tCommon('explorer')}</FooterLink>
+                      <FooterLink href={site.chain.faucet} external>{tCommon('faucet')}</FooterLink>
                       <FooterLink href="https://github.com/palimesh/palimesh" external>{tCommon('github')}</FooterLink>
                     </ul>
                   </div>
@@ -190,7 +182,7 @@ export default async function LocaleLayout({
                 <div className="border-t border-line pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-text-muted text-sm">
-                      &copy; 2026 PaliMesh. {tFooter('allRightsReserved')}.
+                      &copy; 2026 {site.brand}. {tFooter('allRightsReserved')}.
                     </p>
                     <div className="flex items-center gap-3 text-text-muted text-sm font-mono">
                       <div className="w-2 h-2 bg-accent-cyan rounded-full animate-pulse" />

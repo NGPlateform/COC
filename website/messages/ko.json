@@ -25,11 +25,12 @@
     "faucet": "파우셋",
     "protocol": "프로토콜",
     "build": "빌드",
-    "story": "기원"
+    "story": "기원",
+    "economics": "토크노믹스"
   },
   "home": {
     "hero": {
-      "kicker": "PaliMesh · AI 에이전트를 위한 검증 가능한 기억",
+      "kicker": "Palium · AI 에이전트를 위한 검증 가능한 기억",
       "title": "모든 상태가 되돌아오는 체인.",
       "subtitle": "Palimesh는 AI 에이전트를 위해 설계된 BFT 블록체인입니다. 노드가 실제로 수행한 서비스(PoSe), 에이전트가 축적한 메모리, 호스트 간에 가지고 다닐 수 있는 신원 — 이 세 가지를 온체인에서 검증 가능하게 만듭니다.",
       "ctaTestnet": "테스트넷에 연결",
@@ -41,11 +42,11 @@
       "factEvm": "실행 레이어",
       "factEvmValue": "EVM (Paris), Solidity 0.8.x",
       "factRpc": "공개 RPC",
-      "artAlt": "빽빽한 라틴 필체와 희미한 네트워크 도해가 있는 화려한 중세풍 PaliMesh 양피지 사본",
+      "artAlt": "빽빽한 라틴 필체와 희미한 네트워크 도해가 있는 화려한 중세풍 Palium 양피지 사본",
       "scriptureLines": [
         "태초에 기억은 머물 곳이 없었다.",
         "신원은 호스트 사이를 떠돌았다.",
-        "PaliMesh는 서비스를 검증 가능하게 했다.",
+        "Palium는 서비스를 검증 가능하게 했다.",
         "기억은 남고, 신원은 돌아온다.",
         "체인에 기록된 것은 잊히지 않는다."
       ]
@@ -168,6 +169,11 @@
         "assets": "자산",
         "relationships": "관계"
       }
+    },
+    "storageHero": {
+      "kicker": "탈중앙 스토리지",
+      "title": "결코 잊지 않는 스토리지.",
+      "subtitle": "PaliMesh 는 AI 에이전트를 위한 소거 부호화 스토리지 메시입니다 — 지속되는 메모리, 이동 가능한 신원, 어떤 호스트보다 오래 남는 콘텐츠. Palium 에서 정산."
     }
   },
   "technology": {
@@ -1469,6 +1475,121 @@
     "agent": {
       "aria": "에이전트 6층 다이어그램: 신원에서 관계까지",
       "caption": "여섯 층으로 쓰인 에이전트 — 가장 새로운 필체가 맨 위에, 첫 필체는 지금도 아래에서 읽힙니다."
+    }
+  },
+  "economics": {
+    "palium": {
+      "kicker": "PALIUM 이코노미",
+      "title": "$PALI 토큰",
+      "subtitle": "$PALI 는 Palium 체인의 네이티브 자산 — 가스, 밸리데이터 스테이크, 서비스 보상, 거버넌스.",
+      "facts": [
+        {
+          "k": "토큰",
+          "v": "$PALI"
+        },
+        {
+          "k": "체인",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "유형",
+          "v": "네이티브 가스"
+        },
+        {
+          "k": "스테이킹",
+          "v": "밸리데이터별"
+        }
+      ],
+      "pointsKicker": "효용",
+      "pointsTitle": "$PALI 의 역할",
+      "pointsSubtitle": "네 가지 역할이 체인의 보안과 조정을 지탱합니다.",
+      "points": [
+        {
+          "title": "네이티브 가스",
+          "body": "Palium 의 모든 트랜잭션과 컨트랙트 호출은 $PALI 로 측정·지불됩니다."
+        },
+        {
+          "title": "밸리데이터 스테이크",
+          "body": "밸리데이터는 $PALI 를 본드하고, 부정 행위는 슬래시됩니다. 스테이크가 BFT 를 지킵니다."
+        },
+        {
+          "title": "서비스 보상",
+          "body": "PoSe uptime·relay 챌린지는 매 에포크 PoSeManagerV2 를 통해 $PALI 로 정산됩니다."
+        },
+        {
+          "title": "온체인 거버넌스",
+          "body": "$PALI 보유자는 양원 DAO(Human 원·Claw 원)에서 투표합니다."
+        }
+      ],
+      "allocKicker": "",
+      "allocTitle": "",
+      "allocSubtitle": "",
+      "allocation": []
+    },
+    "palimesh": {
+      "kicker": "PALIMESH 이코노미",
+      "title": "$MESH 토큰",
+      "subtitle": "$MESH 는 PaliMesh 스토리지 네트워크를 구동합니다 — 스토리지 비용을 지불하고 데이터를 지키는 노드에 보상합니다. Palium 에서 정산.",
+      "facts": [
+        {
+          "k": "토큰",
+          "v": "$MESH"
+        },
+        {
+          "k": "총 공급량",
+          "v": "1,000,000,000"
+        },
+        {
+          "k": "정산 체인",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "노드 보증금",
+          "v": "$PALI 재사용"
+        }
+      ],
+      "pointsKicker": "메커니즘",
+      "pointsTitle": "$MESH 작동 방식",
+      "pointsSubtitle": "스토리지는 서비스이고, $MESH 는 그 독립적인 계산 단위입니다.",
+      "points": [
+        {
+          "title": "스토리지 인센티브",
+          "body": "스토리지 노드는 데이터 보유 증명(PoSe 스토리지 S 챌린지)으로 $MESH 를 벌고, 보상 풀에서 일정 속도로 방출됩니다."
+        },
+        {
+          "title": "결제 흐름",
+          "body": "사용자는 $MESH 로 저장 비용을 냅니다. 각 결제는 70% 노드, 20% PaliMesh 국고, 10% 소각 — 성장에 따른 완만한 디플레이션."
+        },
+        {
+          "title": "보증금은 $PALI 재사용",
+          "body": "스토리지 노드는 Palium 노드이며 $PALI 를 본드하고, 데이터 손실 시 기존 PoSe 로 슬래시됩니다."
+        },
+        {
+          "title": "$PALI 와의 관계",
+          "body": "$MESH 는 독립적이고 페그되지 않습니다. Palium 에서 정산되므로 가스는 $PALI 로 지불되어 서로 보완합니다."
+        }
+      ],
+      "allocKicker": "공급",
+      "allocTitle": "고정 공급, 일정 방출",
+      "allocSubtitle": "1,000,000,000 $MESH, 인플레이션 없음 — 보상 풀은 선형 방출.",
+      "allocation": [
+        {
+          "label": "스토리지 보상 풀",
+          "value": "40%"
+        },
+        {
+          "label": "생태계·에어드롭",
+          "value": "20%"
+        },
+        {
+          "label": "팀·재단(4년 선형)",
+          "value": "20%"
+        },
+        {
+          "label": "유동성·준비금",
+          "value": "20%"
+        }
+      ]
     }
   }
 }

@@ -25,13 +25,14 @@
     "faucet": "Faucet",
     "protocol": "Protocol",
     "build": "Build",
-    "story": "Origins"
+    "story": "Origins",
+    "economics": "Economics"
   },
   "home": {
     "hero": {
-      "kicker": "PaliMesh · Verifiable memory for AI agents",
+      "kicker": "Palium · Verifiable memory for AI agents",
       "title": "The chain where state returns.",
-      "subtitle": "PaliMesh is a BFT blockchain purpose-built for AI agents. It makes three things verifiable on-chain: the service a node actually performs (PoSe), the memory an agent accumulates, and the identity it carries between hosts.",
+      "subtitle": "Palium is a BFT blockchain purpose-built for AI agents. It makes three things verifiable on-chain: the service a node actually performs (PoSe), the memory an agent accumulates, and the identity it carries between hosts.",
       "ctaTestnet": "Connect to the testnet",
       "ctaDocs": "Read the docs",
       "factsLabel": "PROTOCOL FACTS",
@@ -41,11 +42,11 @@
       "factEvm": "Execution",
       "factEvmValue": "EVM (Paris), Solidity 0.8.x",
       "factRpc": "Public RPC",
-      "artAlt": "An ornate medieval-style PaliMesh codex page with dense Latin script and a faint network diagram",
+      "artAlt": "An ornate medieval-style Palium codex page with dense Latin script and a faint network diagram",
       "scriptureLines": [
         "In the beginning, memory had no home.",
         "Identity wandered between hosts.",
-        "PaliMesh made service verifiable.",
+        "Palium made service verifiable.",
         "Memory endures; identity returns.",
         "What the chain records is not forgotten."
       ]
@@ -168,6 +169,11 @@
         "assets": "Assets",
         "relationships": "Relationships"
       }
+    },
+    "storageHero": {
+      "kicker": "DECENTRALIZED STORAGE",
+      "title": "Storage that never forgets.",
+      "subtitle": "PaliMesh is an erasure-coded storage mesh for AI agents — persistent memory, portable identity, and content that outlives any host. Settled on Palium."
     }
   },
   "technology": {
@@ -1469,6 +1475,121 @@
     "agent": {
       "aria": "Agent layered-state diagram: six layers from identity to relationships",
       "caption": "An agent written in six layers — the newest hand on top, the first still legible beneath."
+    }
+  },
+  "economics": {
+    "palium": {
+      "kicker": "PALIUM ECONOMY",
+      "title": "The $PALI token",
+      "subtitle": "$PALI is the native asset of the Palium chain — gas, validator stake, service rewards, and governance.",
+      "facts": [
+        {
+          "k": "Token",
+          "v": "$PALI"
+        },
+        {
+          "k": "Chain",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "Type",
+          "v": "native gas"
+        },
+        {
+          "k": "Staking",
+          "v": "per validator"
+        }
+      ],
+      "pointsKicker": "Utility",
+      "pointsTitle": "What $PALI does",
+      "pointsSubtitle": "Four roles anchor the chain's security and coordination.",
+      "points": [
+        {
+          "title": "Native gas",
+          "body": "Every transaction and contract call on Palium is metered and paid in $PALI."
+        },
+        {
+          "title": "Validator stake",
+          "body": "Validators bond $PALI; misbehavior is slashed. Stake secures BFT consensus."
+        },
+        {
+          "title": "Service rewards",
+          "body": "PoSe uptime and relay challenges settle in $PALI through PoSeManagerV2 each epoch."
+        },
+        {
+          "title": "On-chain governance",
+          "body": "$PALI holders vote on the bicameral DAO — Human and Claw chambers."
+        }
+      ],
+      "allocKicker": "",
+      "allocTitle": "",
+      "allocSubtitle": "",
+      "allocation": []
+    },
+    "palimesh": {
+      "kicker": "PALIMESH ECONOMY",
+      "title": "The $MESH token",
+      "subtitle": "$MESH powers the PaliMesh storage network — it pays for storage and rewards the nodes that keep data alive. Settled on Palium.",
+      "facts": [
+        {
+          "k": "Token",
+          "v": "$MESH"
+        },
+        {
+          "k": "Total supply",
+          "v": "1,000,000,000"
+        },
+        {
+          "k": "Settlement chain",
+          "v": "Palium (88780)"
+        },
+        {
+          "k": "Node bond",
+          "v": "reuses $PALI"
+        }
+      ],
+      "pointsKicker": "Mechanics",
+      "pointsTitle": "How $MESH works",
+      "pointsSubtitle": "Storage is a service; $MESH is its independent unit of account.",
+      "points": [
+        {
+          "title": "Storage incentive",
+          "body": "Storage nodes earn $MESH by proving they hold data — the PoSe Storage (S) challenge — released from the reward pool at a steady rate."
+        },
+        {
+          "title": "Payment flow",
+          "body": "Users pay $MESH to store data. Each payment splits 70% to storage nodes, 20% to the PaliMesh treasury, 10% burned — a mild deflationary pull as the network grows."
+        },
+        {
+          "title": "Node bond reuses $PALI",
+          "body": "Storage nodes are Palium nodes; they bond $PALI and are slashed on lost data via the existing PoSe mechanism. No separate $MESH stake required."
+        },
+        {
+          "title": "Relationship to $PALI",
+          "body": "$MESH is independent and unpegged. Because it settles on Palium, its transaction gas is paid in $PALI — the two tokens reinforce rather than compete."
+        }
+      ],
+      "allocKicker": "Supply",
+      "allocTitle": "Fixed supply, steady release",
+      "allocSubtitle": "1,000,000,000 $MESH, no inflation — the reward pool releases linearly.",
+      "allocation": [
+        {
+          "label": "Storage reward pool",
+          "value": "40%"
+        },
+        {
+          "label": "Ecosystem & airdrop",
+          "value": "20%"
+        },
+        {
+          "label": "Team & foundation (4-yr linear)",
+          "value": "20%"
+        },
+        {
+          "label": "Liquidity & reserve",
+          "value": "20%"
+        }
+      ]
     }
   }
 }
