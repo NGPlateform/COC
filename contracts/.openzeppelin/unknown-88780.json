@@ -65,6 +65,21 @@
       "address": "0xA2Bf9FA3382A0A8aFf406BE8A8e9a64E1d69dC4e",
       "txHash": "0x528d54366ce7f8ec46ae4918a7b9b833a647b1f0c2a942dfd43dc16bdec0be17",
       "kind": "uups"
+    },
+    {
+      "address": "0x5BDe4055E2A20FD614a68F7433207694ab6E5D35",
+      "txHash": "0x68fb0dd62b910764ef0a4145da1bb9f82de575a24ed2120bb26c273f15ebcde3",
+      "kind": "uups"
+    },
+    {
+      "address": "0x6654C8d09491BD7aEF42B7DB3e2Bc55079897f49",
+      "txHash": "0x139a2cb4c2f82697adb17644eaa73b4b196e2850a124341145b3a86dc002c076",
+      "kind": "uups"
+    },
+    {
+      "address": "0x0b617777E93e42adA37E753BD33fACBAE2A46D67",
+      "txHash": "0xf022355a5c8792f4505f00df2bc558f0c235c4bc0df03ad5abdf4f4a716a795b",
+      "kind": "uups"
     }
   ],
   "impls": {
@@ -9343,6 +9358,549 @@
           "t_uint8": {
             "label": "uint8",
             "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "7bec471a27181da01e30af5f54dc0b66ce5ad9c67a3268a9db34cf088ba733e5": {
+      "address": "0xf80BEeC07E5Fe076311629F2F0a5DBeF44e15cc8",
+      "txHash": "0x8cc77a3b16c1a34b1ee7ea6e0111cc95721ec274dc5cd18e6c0504f49abcddf1",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "beneficiary",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "MeshVesting",
+            "src": "contracts-src/token/MeshVesting.sol:34"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "MeshVesting",
+            "src": "contracts-src/token/MeshVesting.sol:35"
+          },
+          {
+            "label": "meshToken",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "MeshVesting",
+            "src": "contracts-src/token/MeshVesting.sol:36"
+          },
+          {
+            "label": "vestingStart",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256",
+            "contract": "MeshVesting",
+            "src": "contracts-src/token/MeshVesting.sol:38"
+          },
+          {
+            "label": "totalReleased",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256",
+            "contract": "MeshVesting",
+            "src": "contracts-src/token/MeshVesting.sol:39"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "MeshVesting",
+            "src": "contracts-src/token/MeshVesting.sol:129"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)172_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "081bd695f79905fbcc6ab4234cd722fc20b08a735b181a023214887d0d816ed9": {
+      "address": "0xc572D94A0Eff018b16f76C9656D57F2cE699370b",
+      "txHash": "0x678f90f228cdd5da11eb4ffa629a3947c79bdc1428c13988f42d5b247af15f33",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "totalSupply",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:49"
+          },
+          {
+            "label": "totalMinted",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:50"
+          },
+          {
+            "label": "totalBurned",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:51"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:53"
+          },
+          {
+            "label": "minter",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:54"
+          },
+          {
+            "label": "balanceOf",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:56"
+          },
+          {
+            "label": "allowance",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:57"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "MeshToken",
+            "src": "contracts-src/token/MeshToken.sol:226"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)172_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "18fbc33df1cf4db452fecda8fc37a7eab1d4dcd3116ff04b5332b4e2c2a89eeb": {
+      "address": "0xC52a4D57487474507A13cC6F3Af084666dD6f5e0",
+      "txHash": "0xc06cfe2b218da48203e405ccab125e1df38dc557d1acf097a315b6107d887a28",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "meshToken",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(IMeshToken)17257",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:64"
+          },
+          {
+            "label": "poseRegistry",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_contract(IPoSeNodeRegistry)17266",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:65"
+          },
+          {
+            "label": "treasury",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:66"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:67"
+          },
+          {
+            "label": "relayers",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:69"
+          },
+          {
+            "label": "startEpoch",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint64",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:71"
+          },
+          {
+            "label": "emissionPerEpoch",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:72"
+          },
+          {
+            "label": "unlockedBaseline",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:75"
+          },
+          {
+            "label": "rateAnchorEpoch",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_uint64",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:76"
+          },
+          {
+            "label": "totalScheduled",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:78"
+          },
+          {
+            "label": "totalRewarded",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:79"
+          },
+          {
+            "label": "totalPaidToNodes",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:80"
+          },
+          {
+            "label": "totalToTreasury",
+            "offset": 0,
+            "slot": "12",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:81"
+          },
+          {
+            "label": "totalBurned",
+            "offset": 0,
+            "slot": "13",
+            "type": "t_uint256",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:82"
+          },
+          {
+            "label": "storageRewardRoot",
+            "offset": 0,
+            "slot": "14",
+            "type": "t_mapping(t_uint64,t_bytes32)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:84"
+          },
+          {
+            "label": "epochSubmitted",
+            "offset": 0,
+            "slot": "15",
+            "type": "t_mapping(t_uint64,t_bool)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:85"
+          },
+          {
+            "label": "epochSubmittedAtEpoch",
+            "offset": 0,
+            "slot": "16",
+            "type": "t_mapping(t_uint64,t_uint64)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:86"
+          },
+          {
+            "label": "epochSwept",
+            "offset": 0,
+            "slot": "17",
+            "type": "t_mapping(t_uint64,t_bool)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:87"
+          },
+          {
+            "label": "epochTotalMesh",
+            "offset": 0,
+            "slot": "18",
+            "type": "t_mapping(t_uint64,t_uint256)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:88"
+          },
+          {
+            "label": "epochClaimedMesh",
+            "offset": 0,
+            "slot": "19",
+            "type": "t_mapping(t_uint64,t_uint256)",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:89"
+          },
+          {
+            "label": "rewardClaimed",
+            "offset": 0,
+            "slot": "20",
+            "type": "t_mapping(t_uint64,t_mapping(t_bytes32,t_bool))",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:90"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "21",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "StorageRewardManager",
+            "src": "contracts-src/settlement/StorageRewardManager.sol:349"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)172_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IMeshToken)17257": {
+            "label": "contract IMeshToken",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IPoSeNodeRegistry)17266": {
+            "label": "contract IPoSeNodeRegistry",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint64,t_bool)": {
+            "label": "mapping(uint64 => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint64,t_bytes32)": {
+            "label": "mapping(uint64 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint64,t_mapping(t_bytes32,t_bool))": {
+            "label": "mapping(uint64 => mapping(bytes32 => bool))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint64,t_uint256)": {
+            "label": "mapping(uint64 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint64,t_uint64)": {
+            "label": "mapping(uint64 => uint64)",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
           }
         },
         "namespaces": {
